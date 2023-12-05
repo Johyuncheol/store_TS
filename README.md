@@ -1,5 +1,5 @@
 # Everyday Chic
-#### 클라이언트 : React.js \n
+#### 클라이언트 : React.js
 #### 언어 : TypeScripts
 #### mock API : MSW 
 
