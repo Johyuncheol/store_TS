@@ -10,10 +10,12 @@ interface Item {
   imgSrc: string;
 }
 
-const SmallCarousel: React.FC<{ adata: Item[]; category: string }> = ({
-  adata,
-  category,
-}) => {
+const SmallCarousel: React.FC<{
+  adata: Item[];
+  category: string;
+  width: string;
+  height: string;
+}> = ({ adata, category,width,height }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const localVarRef = useRef<number>(0);
   const backgroundRef = useRef<string>("");
@@ -73,15 +75,43 @@ const SmallCarousel: React.FC<{ adata: Item[]; category: string }> = ({
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (carouselRef.current) {
+        carouselRef.current.style.transition = "";
+        carouselRef.current.style.transform = `translateX(-${
+          (carouselRef.current.clientWidth / data.length) * localVarRef.current
+        }px)`;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div>
       <CarouselName>
-        <span className="category">{category}</span>
-        <Link to={"/"}>{"더보기 > "}</Link>
+        <div>
+          <span className="category">{category}</span>
+          <Link to={"/"}>{"더보기 > "}</Link>
+        </div>
+
+        <div className="moveBtn">
+          <LeftBtn onClick={prevSlide}>{"<"}</LeftBtn>
+          <RightBtn onClick={nextSlide}>{">"}</RightBtn>
+        </div>
       </CarouselName>
 
-      <CarouselSection>
-        <Inner ref={carouselRef} state={Ani} currentIndex={currentIndex}>
+      <CarouselSection height={height}>
+        <Inner
+          ref={carouselRef}
+          width={width}
+          height={height}
+        >
           {data.map((item, index) => {
             return (
               <div className="card" key={index}>
@@ -91,8 +121,8 @@ const SmallCarousel: React.FC<{ adata: Item[]; category: string }> = ({
           })}
         </Inner>
 
-        <LeftBtn src={LeftArrow} onClick={prevSlide} />
-        <RightBtn src={RightArrow} onClick={nextSlide} />
+        {/*         <LeftBtn src={LeftArrow} onClick={prevSlide} />
+        <RightBtn src={RightArrow} onClick={nextSlide} /> */}
       </CarouselSection>
     </div>
   );
@@ -100,58 +130,46 @@ const SmallCarousel: React.FC<{ adata: Item[]; category: string }> = ({
 
 export default SmallCarousel;
 
-const CarouselSection = styled.section`
+const CarouselSection = styled.section<{height: string}>`
   display: flex;
-  width: 64rem;
-  height: 12.156rem;
-  background-color: none;
+  width: 90vw;
+  height: ${(props)=>props.height};
+
   overflow: hidden;
   position: relative;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-
 `;
 
-const Inner = styled.div<{ state: string; currentIndex: number }>`
+const Inner = styled.div<{ width: string; height: string }>`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
 
-  height: 12.156rem;
+  height: ${(props)=>props.height};
 
   .card {
     display: flex;
     justify-content: center;
-    width: 12rem;
-    height: 12.156rem;
+    width: ${(props)=>props.width};
+    height: ${(props)=>props.height};
     flex-shrink: 0; // Prevent cards from shrinking
 
     img {
       width: 100%;
       border-radius: 10px;
-
     }
   }
 `;
 
-const RightBtn = styled.img`
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  font-size: 1.5em;
+const RightBtn = styled.button`
+  font-size: 1rem;
   cursor: pointer;
 `;
 
-const LeftBtn = styled.img`
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  font-size: 1.5em;
+const LeftBtn = styled.button`
+  font-size: 1rem;
   cursor: pointer;
 `;
 
@@ -163,5 +181,9 @@ const CarouselName = styled.div`
   .category {
     font-weight: 600;
     font-size: 1.3rem;
+  }
+
+  .moveBtn {
+    padding-right: 1rem;
   }
 `;

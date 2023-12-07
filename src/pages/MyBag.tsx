@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { getShoppingBag } from "../api/user";
 import { useNavigate } from "react-router-dom";
 const MyBag = () => {
-
-  const navigate= useNavigate();
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     const res = await getShoppingBag();
@@ -91,102 +90,112 @@ const MyBag = () => {
     //or 서버로 요청해서 장바구니를 비운다 ?
   };
 
-  const handleNavigate=()=>{
-    navigate('/best')
-  }
+  const handleNavigate = () => {
+    navigate("/best");
+  };
 
   return (
-    <MyBagSection>
-      <div className="process">
-        <span>01 SHOPPING BAG</span>
-        <span>{"->"}</span>
-        <span>02 ORDER</span>
-        <span>{"->"}</span>
-        <span>03 ORDER CONFIRMED</span>
-      </div>
+    <CenterWrap>
+      <MyBagSection>
+        <div className="process">
+          <span>01 SHOPPING BAG</span>
+          <span>{"->"}</span>
+          <span>02 ORDER</span>
+          <span>{"->"}</span>
+          <span>03 ORDER CONFIRMED</span>
+        </div>
 
-      <div className="itemSection">
-        {MyBagData.length !== 0 ? (
-          <div className="layout1">
-            <div className="layout">
-              <div className="menuItem">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  onChange={handleAllCheckboxChange}
-                ></input>
-              </div>
-              <div className="menuItem">상품 정보</div>
-              <div className="menuItem">수량</div>
-              <div className="menuItem">주문금액</div>
-              <div className="menuItem">배송비</div>
-            </div>
-
-            {MyBagData.map((item, index) => {
-              return (
-                <div className="layout" key={index}>
-                  <div className="item">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      checked={item.check}
-                      onChange={() => handleCheckboxChange(index)}
-                    ></input>
-                  </div>
-                  <div className="item">{item.name}</div>
-                  <div className="item">{item.count}</div>
-                  <div className="item">{item.price}</div>
-                  <div className="item">{item.delivery}</div>
+        <div className="itemSection">
+          {MyBagData.length !== 0 ? (
+            <div className="layout1">
+              <div className="layout">
+                <div className="menuItem">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    onChange={handleAllCheckboxChange}
+                  ></input>
                 </div>
-              );
-            })}
-
-            <div className="del">
-              <button onClick={handleDeleteItems}>선택상품삭제</button>
-              <span>장바구니는 접속종료후 60일 동안 유지됩니다</span>
-            </div>
-
-            <div className="layoutResult">
-              <div className="menuItem">총 주문금액</div>
-              <div className="menuItem">총 배송비</div>
-              <div className="menuItem">총 결제금액</div>
-            </div>
-
-            <div className="layoutResult2">
-              <div className="menuItem">
-                <div>{payInfo.orderPrice}</div>
-                <div>{payInfo.numOfItems}</div>
+                <div className="menuItem">상품 정보</div>
+                <div className="menuItem">수량</div>
+                <div className="menuItem">주문금액</div>
+                <div className="menuItem">배송비</div>
               </div>
-              <div className="menuItem">+</div>
-              <div className="menuItem">{payInfo.deliveryFee}</div>
-              <div className="menuItem">=</div>
-              <div className="menuItem">{payInfo.totalPrice}</div>
-            </div>
 
-            <div className="FinishBoxWrap">
-              <button className="menuItem">쇼핑 계속하기</button>
-              <button className="menuItem">결제하기</button>
+              {MyBagData.map((item, index) => {
+                return (
+                  <div className="layout" key={index}>
+                    <div className="item">
+                      <input
+                        type="checkbox"
+                        className="checkbox"
+                        checked={item.check}
+                        onChange={() => handleCheckboxChange(index)}
+                      ></input>
+                    </div>
+                    <div className="item">{item.name}</div>
+                    <div className="item">{item.count}</div>
+                    <div className="item">{item.price}</div>
+                    <div className="item">{item.delivery}</div>
+                  </div>
+                );
+              })}
+
+              <div className="del">
+                <button onClick={handleDeleteItems}>선택상품삭제</button>
+                <span>장바구니는 접속종료후 60일 동안 유지됩니다</span>
+              </div>
+
+              <div className="layoutResult">
+                <div className="menuItem">총 주문금액</div>
+                <div className="menuItem">총 배송비</div>
+                <div className="menuItem">총 결제금액</div>
+              </div>
+
+              <div className="layoutResult2">
+                <div className="menuItem">
+                  <div>{payInfo.orderPrice}</div>
+                  <div>{payInfo.numOfItems}</div>
+                </div>
+                <div className="menuItem">+</div>
+                <div className="menuItem">{payInfo.deliveryFee}</div>
+                <div className="menuItem">=</div>
+                <div className="menuItem">{payInfo.totalPrice}</div>
+              </div>
+
+              <div className="FinishBoxWrap">
+                <button className="menuItem">쇼핑 계속하기</button>
+                <button className="menuItem">결제하기</button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="nonItems">
-            <span>장바구니에 담은 상품이 없습니다</span>
-            <button className="goBest" onClick={handleNavigate}>추천상품 보러가기</button>
-          </div>
-        )}
-      </div>
-    </MyBagSection>
+          ) : (
+            <div className="nonItems">
+              <span>장바구니에 담은 상품이 없습니다</span>
+              <button className="goBest" onClick={handleNavigate}>
+                추천상품 보러가기
+              </button>
+            </div>
+          )}
+        </div>
+      </MyBagSection>
+    </CenterWrap>
   );
 };
 
 export default MyBag;
 
+const CenterWrap = styled.section`
+display:flex;
+justify-content:center;
+
+`
 const MyBagSection = styled.section`
-  padding-top: 10rem;
+  padding-top: 5rem;
   display: flex;
   flex-direction: column;
   width: 64rem;
   align-items: center;
+  
 
   .process {
     display: flex;
@@ -287,21 +296,21 @@ const MyBagSection = styled.section`
       }
     }
 
-    .FinishBoxWrap{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:20px;
-      height:200px;
-      
+    .FinishBoxWrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      height: 200px;
+
       button {
         width: 200px;
         height: 50px;
         background-color: black;
         color: white;
         border: 1px solid grey;
-        font-weight:800;
-        font-size:1.5rem;
+        font-weight: 800;
+        font-size: 1.5rem;
         cursor: pointer;
 
         &:hover {
@@ -310,24 +319,24 @@ const MyBagSection = styled.section`
       }
     }
 
-    .nonItems{
-      font-size:3rem;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
+    .nonItems {
+      font-size: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       min-height: 20rem;
 
-      gap:5rem;
+      gap: 5rem;
 
       button {
-        width:80%;
+        width: 80%;
         height: 50px;
         background-color: black;
         color: white;
         border: 1px solid grey;
-        font-weight:800;
-        font-size:1.5rem;
+        font-weight: 800;
+        font-size: 1.5rem;
         cursor: pointer;
 
         &:hover {

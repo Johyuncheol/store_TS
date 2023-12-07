@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     <LayoutSection>
       <Header />
       <Outlet />
-      <Footer/>
+      <Footer />
     </LayoutSection>
   );
 };
@@ -18,6 +18,9 @@ export default Layout;
 const LayoutSection = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-width: 64rem;
+  width: 100%;
+  /*   align-items:center; */
+  /*   min-width: 64rem; */
+
+
 `;

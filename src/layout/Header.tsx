@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ const Header: React.FC = () => {
 
   const [user, setUser] = useState(userInfo);
 
+  const BGColor = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const Logout = () => {
     LogoutAPI();
@@ -30,35 +31,63 @@ const Header: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      // 현재 스크롤 위치가 맨 위인지 확인
+      const isAtTop = window.scrollY === 0;
+
+      // isAtTop 값을 기반으로 원하는 작업 수행
+      if (isAtTop) {
+
+        BGColor.current!.style.backgroundColor = "";
+        BGColor.current!.style.borderBottom=""
+        // 원하는 동작 수행
+      } else {
+        BGColor.current!.style.backgroundColor = "#e0e0e2";
+        BGColor.current!.style.borderBottom="1px solid black"
+        // 원하는 다른 동작 수행
+      }
+    };
+
+    // 스크롤 이벤트 리스너 등록
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트가 언마운트되면 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  
+
   return (
-    <HeaderSection>
+    <HeaderSection ref={BGColor}>
       <div className="inner">
         <div className="circle" />
         <Link to="/" className="title">
-          Everyday <br />
-          Chic
+          E.C
         </Link>
 
         <div className="Vector-8"></div>
         <div className="Vector-8"></div>
 
         <div className="options">
-          <div className="clothes-home-tech-clothes-home-tech">
+          {/*         <div className="Vector-8"></div>
+        <div className="Vector-8"></div>
+        <div className="Vector-8"></div> */}
+          <div className="clothes-home-tech-clothes-home-tech3">
             <Link to="/best">MyLike</Link>
             <Link to="/mybag">MyBag</Link>
             <Link to="/best">MyPage</Link>
             <Link to="/login">Login</Link>
           </div>
-
-          {/*         <div className="Vector-8"></div>
-        <div className="Vector-8"></div>
-        <div className="Vector-8"></div> */}
-
           <div className="clothes-home-tech-clothes-home-tech2">
             <Link to="/best">BEST</Link>
             <Link to="/best">WOMAN</Link>
             <Link to="/best">MAN</Link>
             <Link to="/best">INTERIOR</Link>
+            <Link to="/best">Brand</Link>
+            <Link to="/mybag">Event</Link>
+            <Link to="/best">LookBook</Link>
           </div>
         </div>
       </div>
@@ -70,31 +99,29 @@ export default Header;
 
 const HeaderSection = styled.section`
   display: flex;
-  justify-content: center;
-  min-width: 64rem;
-  margin-top: 1.25rem;
-  position: absolute;
+  position: sticky;
+  top: 0;
   z-index: 2;
-  height: 10rem;
-
+  height: 5rem;
+  width: 100%;
+  padding: 0 1rem;
+  
   .inner {
     display: flex;
     align-items: center;
-
+    width: 100%;
     height: 5.75rem;
-    flex-grow: 0;
 
     .title {
       font-size: 2rem;
       font-weight: 600;
       text-decoration: none;
       color: #993a3a;
-      margin-left: 1.511rem;
     }
   }
 
   .circle {
-    flex-grow: 0;
+    flex-shrink: 0; 
     width: 2.214rem;
     height: 2.214rem;
     border-radius: 50%;
@@ -103,8 +130,8 @@ const HeaderSection = styled.section`
 
   .Vector-8 {
     width: 0.063rem;
-    height: 5.75rem;
-    flex-grow: 0;
+    height: 3.75rem;
+    flex-shrink: 0;
     margin: 0 1.345rem 0 1.291rem;
     background-color: #993a3a;
   }
@@ -112,18 +139,18 @@ const HeaderSection = styled.section`
   .options {
     display: flex;
     flex-direction: column;
-    width: 40rem;
+    width: 100%;
   }
   .clothes-home-tech-clothes-home-tech {
     display: flex;
     justify-content: right;
     gap: 20px;
 
-    flex-grow: 0;
+    flex-shrink: 0;
     font-size: 1.15rem;
     font-weight: 500;
     font-style: normal;
-    line-height: 3rem;
+
     text-align: center;
     color: #551a8b;
 
@@ -142,11 +169,33 @@ const HeaderSection = styled.section`
     justify-content: left;
     gap: 20px;
 
-    flex-grow: 0;
-    font-size: 1.25rem;
+    flex-shrink: 0;
+    font-size: 1rem;
     font-weight: 500;
     line-height: 3rem;
-    text-align: center;
     color: black;
+  }
+
+  .clothes-home-tech-clothes-home-tech3 {
+    display: flex;
+    justify-content: right;
+    gap: 20px;
+
+    flex-shrink: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    font-style: normal;
+
+    text-align: center;
+    color: #551a8b;
+
+    a {
+      color: #551a8b;
+      text-decoration: none;
+    }
+
+    span {
+      cursor: pointer;
+    }
   }
 `;

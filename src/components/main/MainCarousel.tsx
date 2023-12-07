@@ -33,6 +33,23 @@ const MainCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
     setBackgroundImg(data[currentIndex].imgSrc);
   }, [currentIndex]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (carouselRef.current) {
+        carouselRef.current.style.transition = "";
+        carouselRef.current.style.transform = `translateX(-${
+          (carouselRef.current.clientWidth / data.length) * localVarRef.current
+        }px)`;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const nextSlide = () => {
     if (carouselRef.current) {
       //위치를 나타내는 useRef ++
@@ -111,8 +128,7 @@ const MainCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
 
         <LeftBtn src={LeftArrow} onClick={prevSlide} />
         <RightBtn src={RightArrow} onClick={nextSlide} />
-        <CurrentPage >{`${currentIndex}/${data.length - 2}`}</CurrentPage>
-
+        <CurrentPage>{`${currentIndex}/${data.length - 2}`}</CurrentPage>
       </CarouselSection>
     </>
   );
@@ -123,15 +139,15 @@ export default MainCarousel;
 const BackgroundIMG = styled.section<{ bgIMG: string }>`
   background-image: url(${(props) => props.bgIMG});
   background-size: cover;
-  width: 64rem;
-  height: 10rem;
-  filter: blur(100px);
+  width: 100%;
+  height: 3rem;
+  filter: blur(50px);
 `;
 
 const CarouselSection = styled.section`
   display: flex;
-  width: 64rem;
-  height: 22.156rem;
+  width: 100%;
+  height: 26.156rem;
   background-color: none;
   overflow: hidden;
   position: relative;
@@ -144,18 +160,18 @@ const Inner = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 22.156rem;
+  height: 26.156rem;
   display: flex;
 
   .card {
     display: flex;
     justify-content: center;
-    width: 64rem;
-    height: 22.156rem;
+    width: 100%;
+    height: 26.156rem;
     background-color: #d9d9d9;
     img {
       display: flex;
-      width: 100%;
+      width: 99vw;
     }
   }
 `;

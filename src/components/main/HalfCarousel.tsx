@@ -15,7 +15,7 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const localVarRef = useRef<number>(1);
 
-  let  carouselData = [adata[adata.length - 1], ...adata];
+  let carouselData = [adata[adata.length - 1], ...adata];
   carouselData = [...carouselData, adata[0]];
 
   const [data] = useState(carouselData);
@@ -30,8 +30,24 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (carouselRef.current) {
+        carouselRef.current.style.transition = "";
+        carouselRef.current.style.transform = `translateX(-${
+          (carouselRef.current.clientWidth / data.length) * localVarRef.current
+        }px)`;
+      }
+    };
 
-  const nextSlide =()=>{
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const nextSlide = () => {
     if (carouselRef.current) {
       //위치를 나타내는 useRef ++
       // 현재위치를 보여줄 필요없으므로 useRef로 제작
@@ -60,7 +76,7 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
         }
       }, 0);
     }
-  }
+  };
 
   const prevSlide = () => {
     if (carouselRef.current) {
@@ -91,7 +107,7 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
         }
       }, 0);
     }
-  }
+  };
 
   return (
     <>
@@ -147,9 +163,8 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
 
         <LeftBtn src={LeftArrow} onClick={prevSlide} />
         <RightBtn src={RightArrow} onClick={nextSlide} />
-        <CurrentPage >{`${currentIndex}/${data.length - 2}`}</CurrentPage>
+        <CurrentPage>{`${currentIndex}/${data.length - 2}`}</CurrentPage>
       </CarouselSection>
-     
     </>
   );
 };
@@ -158,7 +173,7 @@ export default HalfCarousel;
 
 const CarouselSection = styled.section`
   display: flex;
-  width: 64rem;
+  width: 100%;
   height: 22.156rem;
   background-color: none;
   overflow: hidden;
@@ -166,7 +181,6 @@ const CarouselSection = styled.section`
   border-top: 1px solid grey;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-
 `;
 
 const Inner = styled.div`
@@ -188,7 +202,6 @@ const RightBtn = styled.img`
   cursor: pointer;
 `;
 
-
 const CurrentPage = styled.div`
   position: absolute;
   right: 0;
@@ -198,7 +211,6 @@ const CurrentPage = styled.div`
   font-size: 1em;
   cursor: pointer;
 `;
-
 
 const LeftBtn = styled.img`
   position: absolute;
@@ -214,18 +226,21 @@ const Card = styled.div`
   display: flex;
   align-items: Center;
   justify-content: space-around;
-  width: 64rem;
+  width: 100vw;
+  gap:5px;
+  background-color:#c1c1c1;
 
-  background-color: #d9d9d9;
 
   .contentbox {
     width: 50%;
     height: 33%;
     display: flex;
-
+    gap:5px;
     flex-direction: column;
+    color: black;
 
     .innerbox {
+      background-color: #d6d6d6;
       display: flex;
       padding: 1rem;
       align-items: center;
