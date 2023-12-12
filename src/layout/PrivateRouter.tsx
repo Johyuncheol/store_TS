@@ -6,11 +6,13 @@ const PrivateRouter: React.FC = () => {
   const [auth, setAuth] = useState<number>();
 
   const navigate = useNavigate();
+
+  // 로그인 확인 함수
   const authenticated = async () => {
     const res = await CheckIsLoginAPI();
 
-    setAuth(res);
-    if (res !== 201) {
+    setAuth(res?.status);
+    if (res?.status !== 201) {
       navigate("/login");
     } 
   };

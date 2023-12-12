@@ -19,8 +19,5 @@ const LayoutSection = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
-  /*   align-items:center; */
-  /*   min-width: 64rem; */
-
 
 `;

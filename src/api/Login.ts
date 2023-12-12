@@ -22,7 +22,7 @@ export const CheckIsLoginAPI = async () => {
   try {
     const res = await axios.post(`${BASE_URL}/islogin`,null);
     console.log(res)
-    return res.status;
+    return res;
   } catch (error) {
     alert(error);
   }

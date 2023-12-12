@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const CategoryNav = () => {
-  //const [category, setCategory] = useState([1, 2, 3, 4, 5,6,7]);
   const category = [
     {
       name: "BEST",

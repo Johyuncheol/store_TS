@@ -39,6 +39,7 @@ const Main: React.FC = () => {
   return (
     <section>
       {data ? <MainCarousel adata={data.MainBanner} /> : <S_MainCarousel />}
+
       <CategoryNav />
 
       <ItemSection>
@@ -128,7 +129,7 @@ const ItemBox1 = styled.div`
   flex-direction: column;
   background-color: #363535;
   color: whitesmoke;
-  border-top-right-radius:30px;
+  border-top-right-radius: 30px;
   gap: 4rem;
   padding: 8rem 1rem 10rem 2rem;
 

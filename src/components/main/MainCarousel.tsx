@@ -165,13 +165,12 @@ const Inner = styled.div`
 
   .card {
     display: flex;
-    justify-content: center;
-    width: 100%;
+
+    width: 99vw;
     height: 26.156rem;
     background-color: #d9d9d9;
     img {
-      display: flex;
-      width: 99vw;
+      width:100%;
     }
   }
 `;

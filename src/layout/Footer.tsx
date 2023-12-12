@@ -4,7 +4,7 @@ const Footer: React.FC = () => {
   return (
     <FooterSection>
       <div className="linkBoxs">
-        <div className="Box">Contect</div>
+        <div className="Box">contact</div>
         <div className="Box">FAQ</div>
         <div className="Box">1:1 문의</div>
       </div>

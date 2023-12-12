@@ -1,0 +1,29 @@
+{
+    "Women": {
+        "mainCategory": "Women",
+        "subCategory": [
+            "ALL",
+            "outer",
+            "top",
+            "bottom"
+        ]
+    },
+    "Man": {
+        "mainCategory": "Man",
+        "subCategory": [
+            "ALL",
+            "outer",
+            "top",
+            "bottom"
+        ]
+    },
+    "Interior": {
+        "mainCategory": "Interior",
+        "subCategory": [
+            "ALL",
+            "가구",
+            "조명",
+            "페브릭"
+        ]
+    }
+}
