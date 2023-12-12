@@ -13,6 +13,7 @@ const AskPageNation: React.FC = () => {
     movePageBtnHandler,
   } = usePagination(getAsk);
 
+  
   return (
     <PageNationBox currentPage={currentPage}>
       {showData?.map((item) => {

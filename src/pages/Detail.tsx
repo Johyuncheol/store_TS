@@ -70,7 +70,7 @@ const Detail: React.FC = () => {
             </button>
           </DetailArticle>
 
-          <DetailArticle state={isShowDetail} ref={reviewInfoRef}>
+          <DetailArticle state={false} ref={reviewInfoRef}>
             <div className="chapter">
               <span>리뷰</span>
             </div>
@@ -78,7 +78,7 @@ const Detail: React.FC = () => {
             <ReviewPageNation />
           </DetailArticle>
 
-          <DetailArticle state={isShowDetail} ref={inquiredInfoRef}>
+          <DetailArticle state={false} ref={inquiredInfoRef}>
             <div className="chapter">
               <span>문의</span>
             </div>
@@ -233,6 +233,7 @@ const DetailArticle = styled.article<{ state: boolean }>`
   flex-direction: column;
   align-items: center;
   width: 100%;
+
   .detailInfo {
     height: ${(props) => (props.state ? "" : "300px")};
     width: 100%;

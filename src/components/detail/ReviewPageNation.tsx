@@ -118,7 +118,6 @@ const ReviewCard = styled.div<{ size: string }>`
   border-bottom: 1px solid black;
   padding: 10px 0;
   cursor: pointer;
-
   span {
     word-break: break-all;
   }
@@ -133,14 +132,15 @@ const ReviewCard = styled.div<{ size: string }>`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: ${(props) => (props.size === "true" ? "300px" : "")};
 
     .mainInfo {
       flex-direction: column;
     }
 
     .detail {
-      height: ${(props) => (props.size === "true" ? "" : "90px")};
-      overflow: hidden;
+
+      overflow: ${(props) => (props.size === "true" ? "hidden" : "")};
     }
   }
 
