@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { LoginAPI } from "../api/Login";
-import { setUserInfo } from "../redux/modules/User";
+import { LOGIN_USER } from "../redux/modules/User";
 import { useDispatch } from "react-redux";
 import Input from "../components/login/Input";
 
@@ -29,7 +29,7 @@ const Login = () => {
     });
 
     // 요청결과로 받은 유저의 정보를 저장 
-    dispatch(setUserInfo(res));
+    dispatch(LOGIN_USER(res));
     navigate(-1);
   };
 

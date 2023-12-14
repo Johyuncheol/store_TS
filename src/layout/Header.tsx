@@ -4,10 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/config";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../redux/modules/User";
+import { LOGOUT_USER } from "../redux/modules/User";
 import { LogoutAPI } from "../api/Login";
 import MenuModal from "../components/header/MenuModal";
-import { CheckIsLoginAPI } from "../api/Login";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,16 +20,14 @@ const Header: React.FC = () => {
   const BGColor = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  //로그아웃 함수 
+  //로그아웃 함수
   const Logout = () => {
     LogoutAPI();
-    dispatch(setUserInfo({ name: null }));
+    dispatch(LOGOUT_USER({ name: null }));
     setUser({ name: null });
 
     alert("로그아웃 되었습니다!");
-
   };
-
 
   const goLogin = () => {
     if (
@@ -40,23 +37,7 @@ const Header: React.FC = () => {
     }
   };
 
-  // 새로고침시 로그인유지 함수 
-  const authenticated = async () => {
-    const res = await CheckIsLoginAPI();
-
-    if (res) {
-      if (res.data === "") {
-        dispatch(setUserInfo({ name: null }));
-        setUser({ name: null });
-      } else {
-        dispatch(setUserInfo({ name: res.data }));
-        setUser({ name: res.data });
-      }
-    }
-  };
-
   useEffect(() => {
-    authenticated();
     const handleScroll = () => {
       // 현재 스크롤 위치가 맨 위인지 확인
       const isAtTop = window.scrollY === 0;
@@ -81,7 +62,7 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  //상세카테고리 모달창 open 
+  //상세카테고리 모달창 open
   const handleOpenModal = (type: string) => {
     if (type === "") {
       setModalShow(false);
