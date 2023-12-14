@@ -9,10 +9,8 @@ const ReviewPageNation: React.FC = () => {
     pageNums,
     currentPage,
     setCurrentPage,
-    ExistNext,
     movePageBtnHandler,
-  } = usePagination(getReview);
-  console.log(showData);
+  } = usePagination(() => getReview("0", currentPage), 6);
 
   const [showAllIndex, setShowAllIndex] = useState<number>();
   const showAll = (index: number) => {
@@ -47,9 +45,7 @@ const ReviewPageNation: React.FC = () => {
               <div className="main">
                 <div className="mainInfo">
                   <span>{item.option}</span>
-                  <span className="detail">
-                    {item.detail}
-                  </span>
+                  <span className="detail">{item.detail}</span>
                 </div>
                 <img src={item.imgUrl} />
               </div>
@@ -77,7 +73,6 @@ const ReviewPageNation: React.FC = () => {
             </span>
           );
         })}
-        {ExistNext && <span>...</span>}
         <span onClick={() => movePageBtnHandler("right")}>{">"}</span>
       </div>
     </PageNationBox>
@@ -139,7 +134,6 @@ const ReviewCard = styled.div<{ size: string }>`
     }
 
     .detail {
-
       overflow: ${(props) => (props.size === "true" ? "hidden" : "")};
     }
   }

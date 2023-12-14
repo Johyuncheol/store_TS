@@ -14,6 +14,7 @@ interface MainData {
   Sale: Item[];
   SaleRelated: Item[];
 }
+
 export const getMain = async (): Promise<MainData> => {
     try {
       const res = await axios.get(`${BASE_URL}/`);

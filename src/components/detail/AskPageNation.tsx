@@ -9,11 +9,10 @@ const AskPageNation: React.FC = () => {
     pageNums,
     currentPage,
     setCurrentPage,
-    ExistNext,
     movePageBtnHandler,
-  } = usePagination(getAsk);
-
+  } = usePagination(()=>getAsk("0",currentPage),6);
   
+
   return (
     <PageNationBox currentPage={currentPage}>
       {showData?.map((item) => {
@@ -37,7 +36,7 @@ const AskPageNation: React.FC = () => {
             </div>
           );
       })}
-      <div className="pageNums">
+      <PageNums>
         <span onClick={() => movePageBtnHandler("left")}>{"<"}</span>
         {pageNums.map((item, index) => {
           return currentPage === item ? (
@@ -58,19 +57,33 @@ const AskPageNation: React.FC = () => {
             </span>
           );
         })}
-        {ExistNext && <span>...</span>}
         <span onClick={() => movePageBtnHandler("right")}>{">"}</span>
-      </div>
+      </PageNums>
     </PageNationBox>
   );
 };
 
 export default AskPageNation;
+const PageNums = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 
+  span {
+    cursor: pointer;
+  }
+  .bold {
+    font-weight: 600;
+  }
+  .grey {
+    color: grey;
+  }
+`;
 const PageNationBox = styled.div<{ currentPage: number }>`
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   .bold {
     font-weight: 600;
@@ -110,13 +123,4 @@ const PageNationBox = styled.div<{ currentPage: number }>`
     width: 8rem;
   }
 
-  .pageNums {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-
-    span {
-      cursor: pointer;
-    }
-  }
 `;

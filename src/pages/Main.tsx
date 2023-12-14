@@ -1,14 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MainCarousel from "../components/main/MainCarousel";
 import CategoryNav from "../components/main/CategoryNav";
 import SmallCarousel from "../components/main/SmallCarousel";
 import HalfCarousel from "../components/main/HalfCarousel";
 import { getMain } from "../api/PageInfo";
-import S_MainCarousel from "../components/main/skeleton/MainCarousel";
-import S_HalfCarousel from "../components/main/skeleton/HalfCarousel";
-import S_SmallCarousel from "../components/main/skeleton/SmallCarousel";
+import { MAIN_CACHE } from "../redux/modules/Cache";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/config";
+
 const Main: React.FC = () => {
+  const dispatch = useDispatch();
+  const mainData = useSelector((state: RootState) => state.Cache);
+
   interface Item {
     id: number;
     imgSrc: string;
@@ -30,81 +34,83 @@ const Main: React.FC = () => {
   const fetchData = async () => {
     const res = await getMain();
     setData(res);
+    dispatch(MAIN_CACHE(res));
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (
+      mainData.MainBanner.length &&
+      mainData.Popular.length &&
+      mainData.PopularRelated.length &&
+      mainData.Recommend.length &&
+      mainData.RecommendRelated.length &&
+      mainData.Sale.length &&
+      mainData.SaleRelated.length
+    ) {
 
+      setData(mainData);
+    } else {
+
+      fetchData();
+    }
+  }, []);
+  console.log(mainData)
   return (
     <section>
-      {data ? <MainCarousel adata={data.MainBanner} /> : <S_MainCarousel />}
+      {data && (
+        <>
+          <MainCarousel adata={data.MainBanner} />
 
-      <CategoryNav />
+          <CategoryNav />
 
-      <ItemSection>
-        <ItemBox>
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}{" "}
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox>
+          <ItemSection>
+            <ItemBox>
+              <SmallCarousel
+                adata={data.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
 
-        <ItemBox1>
-          <span className="contentsName">무심한듯 가볍게</span>
+              <SmallCarousel
+                adata={data.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+            </ItemBox>
 
-          {data ? <HalfCarousel adata={data.Recommend} /> : <S_HalfCarousel />}
-          {data ? (
-            <SmallCarousel
-              adata={data.RecommendRelated}
-              category={"MD 추천"}
-              width={"20vw"}
-              height="12.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox1>
+            <ItemBox1>
+              <span className="contentsName">무심한듯 가볍게</span>
 
-        <ItemBox>
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}{" "}
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox>
-      </ItemSection>
+              <HalfCarousel adata={data.Recommend} />
+
+              <SmallCarousel
+                adata={data.RecommendRelated}
+                category={"MD 추천"}
+                width={"20vw"}
+                height="12.156rem"
+              />
+            </ItemBox1>
+
+            <ItemBox>
+              <SmallCarousel
+                adata={data.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+
+              <SmallCarousel
+                adata={data.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+            </ItemBox>
+          </ItemSection>
+        </>
+      )}
     </section>
   );
 };

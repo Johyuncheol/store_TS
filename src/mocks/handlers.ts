@@ -7,7 +7,7 @@ import interiorData from "../mocks/interior.json";
 import manData from "../mocks/man.json";
 import itemData from "../mocks/item.json";
 import askData from "../mocks/ask.json";
-import reviewData from '../mocks/review.json'
+import reviewData from "../mocks/review.json";
 export const handlers = [
   http.get("/api", () => {
     return HttpResponse.json(mainData, {
@@ -117,45 +117,6 @@ export const handlers = [
     });
   }),
 
-  http.get(`/api/category/:category/:detail`, ({ params }) => {
-    console.log(params);
-
-    interface WomenData {
-      all: Item[];
-      outer: Item[];
-      top: Item[];
-      bottom: Item[];
-    }
-
-    interface Item {
-      id: number;
-      imgSrc: string;
-      brand: string;
-      name: string;
-      price: string;
-    }
-
-    const category = params.category as string;
-    const detail = params.detail as keyof WomenData;
-
-    if (category === "women") {
-      return HttpResponse.json(womenData[detail], {
-        status: 201,
-        statusText: `Success to get ${category + "/" + detail} data`,
-      });
-    } else if (category === "man") {
-      return HttpResponse.json(manData[detail], {
-        status: 201,
-        statusText: `Success to get ${category + "/" + detail} data`,
-      });
-    } else if (category === "interior") {
-      return HttpResponse.json(interiorData[detail], {
-        status: 201,
-        statusText: `Success to get ${category + "/" + detail} data`,
-      });
-    }
-  }),
-
   http.get(`/api/detail`, ({ request }) => {
     const url = new URL(request.url);
     const id = url.searchParams.get("id");
@@ -188,37 +149,43 @@ export const handlers = [
     interface AskData {
       [key: string]: itemRequire[];
     }
+
+    interface response {
+      data: itemRequire[];
+      totalNums: number;
+    }
+
     const url = new URL(request.url);
     const id = url.searchParams.get("id") as string;
     const page = Number(url.searchParams.get("page"));
 
     const keys = Object.keys(askData);
-    console.log(keys.includes(id));
 
     const data = askData as AskData;
 
-    const now = (page + 1) * 6;
-    console.log(data[id][now + 1]);
-
-    let status;
-    if (data[id][now]) status = 201;
-    else status = 202;
-
+      console.log(data[id].length)
     if (page === 1) {
-      const findData = data[id].slice(0, 30);
+      const findData = data[id].slice(0, 6);
+      const sendData: response = {
+        data: findData,
+        totalNums: data[id].length,
+      };
+      return HttpResponse.json(sendData, {
+        status: 201,
+        statusText: "Success to get review",
+      });
+    } else {
+      const findData = data[id].slice((page - 1) * 6, page * 6);
+      const sendData: response = {
+        data: findData,
+        totalNums: data[id].length,
+      };
 
-      return HttpResponse.json(findData, {
-        status,
-        statusText: "Success to get ask",
+      return HttpResponse.json(sendData, {
+        status: 202,
+        statusText: `Success to get data`,
       });
     }
-
-    const findData = data[id].slice(now - 6, now);
-
-    return HttpResponse.json(findData, {
-      status,
-      statusText: "Success to get ask",
-    });
   }),
 
   http.get(`/api/detail/review`, ({ request, params }) => {
@@ -228,13 +195,18 @@ export const handlers = [
       option: string;
       user: string;
       detail: string;
-      imgUrl:string
-      
+      imgUrl: string;
     }
 
     interface ReviewData {
       [key: string]: itemRequire[];
     }
+
+    interface response {
+      data: itemRequire[];
+      totalNums: number;
+    }
+
     const url = new URL(request.url);
     const id = url.searchParams.get("id") as string;
     const page = Number(url.searchParams.get("page"));
@@ -247,24 +219,96 @@ export const handlers = [
     const now = (page + 1) * 6;
     console.log(data[id][now + 1]);
 
-    let status;
-    if (data[id][now]) status = 201;
-    else status = 202;
-
     if (page === 1) {
       const findData = data[id].slice(0, 30);
-
-      return HttpResponse.json(findData, {
-        status,
+      const sendData: response = {
+        data: findData,
+        totalNums: data[id].length,
+      };
+      return HttpResponse.json(sendData, {
+        status: 201,
         statusText: "Success to get review",
       });
+    } else {
+      const findData = data[id].slice((page - 1) * 30, page * 30);
+      const sendData: response = {
+        data: findData,
+        totalNums: data[id].length,
+      };
+
+      return HttpResponse.json(sendData, {
+        status: 202,
+        statusText: `Success to get data`,
+      });
+    }
+  }),
+
+  http.get(`/api/category/:category/:detail`, ({ params, request }) => {
+    console.log(params);
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get("page"));
+
+    interface WomenData {
+      all: Item[];
+      outer: Item[];
+      top: Item[];
+      bottom: Item[];
     }
 
-    const findData = data[id].slice(now - 6, now);
+    interface Item {
+      id: number;
+      imgSrc: string;
+      brand: string;
+      name: string;
+      price: string;
+      totalNums?: number;
+    }
 
-    return HttpResponse.json(findData, {
-      status,
-      statusText: "Success to get review",
-    });
+    interface response {
+      data: Item[];
+      totalNums: number;
+    }
+
+    const category = params.category as string;
+    const detail = params.detail as keyof WomenData;
+
+    let data: Item[] = [];
+
+    if (category === "women") {
+      data = womenData[detail];
+    } else if (category === "man") {
+      data = manData[detail];
+    } else if (category === "interior") {
+      data = interiorData[detail];
+    }
+
+    if (!data) {
+      return;
+    }
+
+    console.log(data.length);
+    if (page == 1) {
+      const findData = data.slice(0, page * 20);
+      const sendData: response = {
+        data: findData,
+        totalNums: data.length,
+      };
+
+      return HttpResponse.json(sendData, {
+        status: 201,
+        statusText: "Success to get review",
+      });
+    } else {
+      const findData = data.slice((page - 1) * 20, page * 20);
+      const sendData: response = {
+        data: findData,
+        totalNums: data.length,
+      };
+
+      return HttpResponse.json(sendData, {
+        status: 202,
+        statusText: `Success to get ${category + "/" + detail} data`,
+      });
+    }
   }),
 ];

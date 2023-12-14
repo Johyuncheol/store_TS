@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from 'react';
 import { Routes, Route } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Globalstyles from "./globalStyle/GlobalStyle";
@@ -11,12 +11,13 @@ import NotFound from "./pages/NotFound";
 import Category from "./pages/Category";
 import Detail from "./pages/Detail";
 function App() {
+
   return (
     <>
       <Globalstyles />
-
       <Routes>
         <Route path="/" element={<Layout />}>
+          
           <Route path="/" element={<Main />} />
           <Route path="category/:param1/:param2" element={<Category />} />
           <Route path="detail/:id" element={<Detail />} />
