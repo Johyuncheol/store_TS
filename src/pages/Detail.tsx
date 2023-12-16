@@ -10,20 +10,12 @@ import ItemSelection from "../components/detail/SelectItem";
 const Detail: React.FC = () => {
   const customOptions = [
     {
-      label: "Color",
-      values: [
-        { value: "C", label: "차콜" },
-        { value: "B", label: "블루" },
-        { value: "G", label: "그레이" },
-      ],
+      label: "color",
+      values: ["차콜" ,"블루","그레이"],
     },
     {
-      label: "Size",
-      values: [
-        { value: "S", label: "S" },
-        { value: "M", label: "M" },
-        { value: "L", label: "L" },
-      ],
+      label: "size",
+      values: ["S" ,"M","L"],
     },
   ];
   const location = useLocation();
@@ -49,9 +41,11 @@ const Detail: React.FC = () => {
     imgSrc: string;
     brand: string;
     name: string;
-    price: string;
+    price: number;
     carouselImg: string[];
     detailImg: string;
+    deliveryFee: number;
+    noDeliveryPrice: number;
   }
   const [data, setData] = useState<dataRequire>();
   const fetchData = async () => {
@@ -66,62 +60,77 @@ const Detail: React.FC = () => {
 
   return (
     <DetailSection>
-      <div className="mainInfo">
-        <div className="left">
-          <article className="carosel">
-            {data?.carouselImg && <Carousel adata={data?.carouselImg} />}
-          </article>
+      {data && (
+        <div className="mainInfo">
+          <div className="left">
+            <article className="carosel">
+              {data?.carouselImg && <Carousel adata={data?.carouselImg} />}
+            </article>
 
-          <article className="nav">
-            <span onClick={() => scrollToElement(detailInfoRef)}>상품설명</span>
-            <span onClick={() => scrollToElement(reviewInfoRef)}>리뷰</span>
-            <span onClick={() => scrollToElement(inquiredInfoRef)}>문의</span>
-          </article>
+            <article className="nav">
+              <span onClick={() => scrollToElement(detailInfoRef)}>
+                상품설명
+              </span>
+              <span onClick={() => scrollToElement(reviewInfoRef)}>리뷰</span>
+              <span onClick={() => scrollToElement(inquiredInfoRef)}>문의</span>
+            </article>
 
-          <DetailArticle state={isShowDetail} ref={detailInfoRef}>
-            <div className="detailInfo">
-              <img src={data?.detailImg} />
+            <DetailArticle state={isShowDetail} ref={detailInfoRef}>
+              <div className="detailInfo">
+                <img src={data?.detailImg} />
+              </div>
+
+              <button onClick={() => setIsShowDetail(!isShowDetail)}>
+                {isShowDetail ? "상품정보 접기" : "상품정보 더보기"}
+              </button>
+            </DetailArticle>
+
+            <DetailArticle state={false} ref={reviewInfoRef}>
+              <div className="chapter">
+                <span>리뷰</span>
+              </div>
+
+              <ReviewPageNation />
+            </DetailArticle>
+
+            <DetailArticle state={false} ref={inquiredInfoRef}>
+              <div className="chapter">
+                <span>문의</span>
+              </div>
+
+              <AskPageNation />
+            </DetailArticle>
+          </div>
+          <div className="right">
+            <div className="option">
+              <div className="itemInfo">
+                <span>{data.brand}</span>
+                <span className="large wordBreak">{data.name}</span>
+                <span className="middle">{data.price}</span>
+              </div>
+
+              <div className="otherInfo">
+                <p>배송정보</p>
+                <p>
+                  {data.noDeliveryPrice}원 미만 결제 시 {data.deliveryFee}원 발생
+                </p>
+              </div>
             </div>
 
-            <button onClick={() => setIsShowDetail(!isShowDetail)}>
-              {isShowDetail ? "상품정보 접기" : "상품정보 더보기"}
-            </button>
-          </DetailArticle>
-
-          <DetailArticle state={false} ref={reviewInfoRef}>
-            <div className="chapter">
-              <span>리뷰</span>
-            </div>
-
-            <ReviewPageNation />
-          </DetailArticle>
-
-          <DetailArticle state={false} ref={inquiredInfoRef}>
-            <div className="chapter">
-              <span>문의</span>
-            </div>
-
-            <AskPageNation />
-          </DetailArticle>
-        </div>
-        <div className="right">
-          <div className="option">
-            <div className="itemInfo">
-              <span>{data?.brand}</span>
-              <span className="large wordBreak">{data?.name}</span>
-              <span className="middle">{data?.price}</span>
+            <div className="option2">
+              <ItemSelection
+                options={customOptions}
+                price={data.price}
+                id={data.id}
+                imgSrc={data.imgSrc}
+                name={data.name}
+                deliveryFee={data.deliveryFee}
+                noDeliveryPrice={data.noDeliveryPrice}
+              />
             </div>
           </div>
-
-          <div className="option2">
-            <ItemSelection options={customOptions} price={10000} />
-
-   
-
-
-          </div>
         </div>
-      </div>
+      )}
     </DetailSection>
   );
 };
@@ -221,6 +230,11 @@ const DetailSection = styled.section`
       option {
         font-size: 1rem;
       }
+
+      .otherInfo{
+        font-size:0.7rem;
+        border-bottom:1px solid #c2c3c4;
+      }
     }
 
     .brandImg {
@@ -263,8 +277,6 @@ const DetailArticle = styled.article<{ state: boolean }>`
     line-height: 4rem;
   }
 `;
-
-
 
 const PageNationBox = styled.div`
   width: 100%;

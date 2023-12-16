@@ -31,7 +31,7 @@ const Input: React.FC<InputRequire> = ({ type }) => {
           className="input"
           value={inputData}
           name={type}
-          onChange={(e) => changeInput(type, e)}
+          onChange={(e) => changeInput({type:type, e:e})}
         />
         {type === "password" && (
           <img src={Img_eye} alt="비밀번호 보기" onClick={ShowPW} />

@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getShoppingBag } from "../api/user";
 import { useNavigate } from "react-router-dom";
+
+
 const MyBag = () => {
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    const res = await getShoppingBag();
-    setMyBagData(res);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  interface MyBagDataRequire {
-    name: string;
+  interface ItemRequire {
+    size?: string;
+    color?: string;
+    other?: string;
     count: number;
     price: number;
-    delivery: number;
-    check: boolean;
+    orderPrice: number;
+    id: string;
+    imgSrc: string;
+    name: string;
+    deliveryFee: number;
+    noDeliveryPrice: number;
   }
-  const [MyBagData, setMyBagData] = useState<MyBagDataRequire[]>([]);
-  const [AllCheckState, setAllCheckState] = useState(true);
 
+  const [data, setData] = useState<ItemRequire[]>([]);
+  const [checkedItem, setCheckedItem] = useState<boolean[]>([]);
+  const [AllCheckState, setAllCheckState] = useState(false);
+
+  // 종합정보
   const [payInfo, setPayInfo] = useState({
     orderPrice: 0,
     deliveryFee: 0,
@@ -31,16 +32,44 @@ const MyBag = () => {
     totalPrice: 0,
   });
 
+
+  //세션스토리지에서 데이터가져오기 
+  const GetBagData = async () => {
+    const shoppingBagData = sessionStorage.getItem("shoppingBag");
+    setData(JSON.parse(shoppingBagData ?? "null"));
+  };
+
+  useEffect(() => {
+    GetBagData();
+
+
+    //data의 개수가 장바구니페이지 처음들어왔을때가 최대라 data로 의존배열 안넣음
+    //넣게되면 개수변경마다 체크 상태 다풀림 
+    setCheckedItem(Array(data.length).fill(false));
+  }, []);
+
+
+
+  // 장바구니 데이터 변경시 세션의 데이터도 변경 
+  useEffect(() => {
+    sessionStorage.setItem("shoppingBag", JSON.stringify(data));
+  }, [data]);
+
+
+
+  //선택아이탬 변경시 종합정보 변경 
   useEffect(() => {
     setPayInfo(() => {
-      const selectedItems = MyBagData.filter((item) => item.check === true);
+      const selectedItems = data.filter(
+        (item, index) => checkedItem[index] === true
+      );
 
       const orderPrice = selectedItems.reduce(
-        (acc, item) => acc + item.price,
+        (acc, item) => acc + item.orderPrice,
         0
       );
       const deliveryFee = selectedItems.reduce(
-        (acc, item) => acc + item.delivery,
+        (acc, item) => acc + item.deliveryFee,
         0
       );
 
@@ -54,44 +83,66 @@ const MyBag = () => {
       };
       return newPayInfo;
     });
-  }, [MyBagData]);
+  }, [checkedItem,data]);
 
+
+  //체크박스 변경
   const handleCheckboxChange = (index: number) => {
-    setMyBagData((prevMyBagData) => {
-      const newMyBagData = [...prevMyBagData];
-      newMyBagData[index].check = !newMyBagData[index].check;
-      return newMyBagData;
+    setCheckedItem((prev) => {
+      const newItem = [...prev];
+      newItem[index] = !newItem[index];
+      return newItem;
     });
   };
 
-  const handleAllCheckboxChange = () => {
-    setMyBagData((prevMyBagData) => {
-      const newMyBagData = prevMyBagData.map((item) => ({
-        ...item,
-        check: AllCheckState,
-      }));
-      return newMyBagData;
-    });
 
-    setAllCheckState((prevAllCheckState) => {
-      const newAllCheckState = !prevAllCheckState;
-      return newAllCheckState;
-    });
+  //체크박스 전체변경
+  const handleAllCheckboxChange = (state: boolean) => {
+    setCheckedItem(Array(data.length).fill(!state));
+    setAllCheckState(!state);
   };
 
+
+  // 아이템 삭제 
   const handleDeleteItems = () => {
-    setMyBagData((prevMyBagData) => {
+    setData((prevMyBagData) => {
       const newMyBagData = [...prevMyBagData].filter(
-        (item) => item.check === false
+        (item, index) => checkedItem[index] === false
       );
+      sessionStorage.setItem("shoppingBag", JSON.stringify(newMyBagData));
+
       return newMyBagData;
     });
-
-    //or 서버로 요청해서 장바구니를 비운다 ?
   };
 
+
+  // 담은 상품없을때
   const handleNavigate = () => {
     navigate("/best");
+  };
+
+
+
+// 아이템 수량 변경 함수 
+  const ChangeNumOfItem = ({index,type}: {index: number;type: string;}) => {
+    let num = 0;
+    if (type === "up") num = 1;
+    else if (type === "down") num = -1;
+
+    setData((prev) =>
+      prev.map((item, prevIndex) => {
+        //동작했을때 0개면 동작안하게
+        if (item.count + num === 0) return item;
+        //정상동작
+        return prevIndex === index
+          ? {
+              ...item,
+              count: item.count + num,
+              orderPrice: item.orderPrice + item.price * num,
+            }
+          : item;
+      })
+    );
   };
 
   return (
@@ -106,14 +157,15 @@ const MyBag = () => {
         </div>
 
         <div className="itemSection">
-          {MyBagData.length !== 0 ? (
+          {data !== null ? (
             <div className="layout1">
               <div className="layout">
                 <div className="menuItem">
                   <input
                     type="checkbox"
                     className="checkbox"
-                    onChange={handleAllCheckboxChange}
+                    checked={AllCheckState}
+                    onChange={() => handleAllCheckboxChange(AllCheckState)}
                   ></input>
                 </div>
                 <div className="menuItem">상품 정보</div>
@@ -122,28 +174,55 @@ const MyBag = () => {
                 <div className="menuItem">배송비</div>
               </div>
 
-              {MyBagData.map((item, index) => {
+              {data.map((item, index) => {
                 return (
                   <div className="layout" key={index}>
                     <div className="item">
                       <input
                         type="checkbox"
                         className="checkbox"
-                        checked={item.check}
+                        checked={checkedItem[index]}
                         onChange={() => handleCheckboxChange(index)}
                       ></input>
                     </div>
-                    <div className="item">{item.name}</div>
+
+                    <div className="Imgitem">
+                      <img src={item.imgSrc} />
+                      <div>
+                        <p>{item.name}</p>
+                        <p>
+                          {item.color}
+                          {item.size}
+                        </p>
+                      </div>
+                    </div>
                     <div className="item">{item.count}</div>
-                    <div className="item">{item.price}</div>
-                    <div className="item">{item.delivery}</div>
+                    <div className="item">
+                      <button
+                        onClick={() =>
+                          ChangeNumOfItem({ index: index, type: "down" })
+                        }
+                      >
+                        ▼
+                      </button>
+                      {item.orderPrice}
+                      <button
+                        onClick={() =>
+                          ChangeNumOfItem({ index: index, type: "up" })
+                        }
+                      >
+                        ▲
+                      </button>
+                    </div>
+
+                    <div className="item">{item.deliveryFee}</div>
                   </div>
                 );
               })}
 
               <div className="del">
                 <button onClick={handleDeleteItems}>선택상품삭제</button>
-                <span>장바구니는 접속종료후 60일 동안 유지됩니다</span>
+                {/*  <span>장바구니는 접속종료후 60일 동안 유지됩니다</span> */}
               </div>
 
               <div className="layoutResult">
@@ -185,17 +264,15 @@ const MyBag = () => {
 export default MyBag;
 
 const CenterWrap = styled.section`
-display:flex;
-justify-content:center;
-
-`
+  display: flex;
+  justify-content: center;
+`;
 const MyBagSection = styled.section`
   padding-top: 5rem;
   display: flex;
   flex-direction: column;
   width: 64rem;
   align-items: center;
-  
 
   .process {
     display: flex;
@@ -255,10 +332,23 @@ const MyBagSection = styled.section`
     }
     .item {
       display: flex;
-      justify-content: center;
+      justify-content: space-around;;
       align-items: center;
       font-weight: 500;
       height: 10rem;
+    }
+
+    .Imgitem {
+      display: flex;
+      gap:10px;
+      align-items: center;
+      font-weight: 500;
+      height: 10rem;
+      img {
+        width: 50%;
+        min-width: 50px;
+        height: 10rem;
+      }
     }
 
     .menuItem {

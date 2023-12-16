@@ -7,7 +7,7 @@ const Globalstyles = createGlobalStyle`
   }
 
   :root {
-    font-size: 16px;
+    font-size: 15px;
 
     @media (max-width: 1024px) {
       font-size: 13px;

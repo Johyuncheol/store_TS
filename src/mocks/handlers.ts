@@ -96,9 +96,6 @@ export const handlers = [
   }),
 
   http.post("/api/logout", () => {
-    // Construct a JSON response with the list of all posts
-    // as the response body.
-
     document.cookie =
       "accessToken=access; expires=Thu, 22 April 1997 00:00:00; secure";
     document.cookie =
@@ -125,9 +122,11 @@ export const handlers = [
       imgSrc: string;
       brand: string;
       name: string;
-      price: string;
+      price: number;
       carouselImg: string[];
       detailImg: string;
+      deliveryFee:number;
+      noDeliveryPrice:number;
     }
     const findData = itemData.item.find((item: itemRequire) => item.id === id);
 
@@ -260,8 +259,9 @@ export const handlers = [
       imgSrc: string;
       brand: string;
       name: string;
-      price: string;
-      totalNums?: number;
+      price: number;
+      deliveryFee:number;
+      noDeliveryPrice:number;
     }
 
     interface response {

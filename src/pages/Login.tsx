@@ -5,6 +5,7 @@ import { LoginAPI } from "../api/Login";
 import { LOGIN_USER } from "../redux/modules/User";
 import { useDispatch } from "react-redux";
 import Input from "../components/login/Input";
+import { getShoppingBag } from "../api/user";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -23,10 +24,15 @@ const Login = () => {
     const id = String(formData.get("id"));
     const password = String(formData.get("password"));
 
+    //로그인 요청 API
     const res = await LoginAPI({
       id,
       password,
     });
+
+    // 로그인시 장바구니정보 세션에 저장 
+    const bagRes = await getShoppingBag();
+    sessionStorage.setItem("shoppingBag", JSON.stringify(bagRes));
 
     // 요청결과로 받은 유저의 정보를 저장 
     dispatch(LOGIN_USER(res));

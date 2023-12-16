@@ -7,30 +7,45 @@ import { useNavigate } from "react-router-dom";
 interface ItemSelectionProps {
   options: {
     label: string;
-    values: { value: string; label: string }[];
+    values: string[];
   }[];
 
   price: number;
-}
-
-interface ItemValue {
-  value: string;
-  label: string;
+  id: string;
+  imgSrc: string;
+  name: string;
+  deliveryFee: number;
+  noDeliveryPrice: number;
 }
 
 interface ItemRequire {
-  [key: string]: string | number | ItemValue;
+  size?: string;
+  color?: string;
+  other?: string;
   count: number;
+  price: number;
+  orderPrice: number;
+  id: string;
+  imgSrc: string;
+  name: string;
+  deliveryFee: number;
+  noDeliveryPrice: number;
 }
 
 interface ItemRequire2 {
-  [key: string]: {
-    value: string;
-    label: string;
-  };
+  [key: string]: string;
 }
 
-const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
+const ItemSelection: React.FC<ItemSelectionProps> = ({
+  options,
+  price,
+  id,
+  imgSrc,
+  name,
+  deliveryFee,
+  noDeliveryPrice,
+}) => {
+  console.log(price);
   const [selectedOptions, setSelectedOptions] = useState<ItemRequire2>({});
   const [selectedItems, setSelectedItems] = useState<ItemRequire[]>([]);
   const [totalNums, setTotalNums] = useState(0);
@@ -43,13 +58,9 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
     optionLabel: string,
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const selectLabel = event.target.selectedOptions[0].label;
     setSelectedOptions((prevOptions) => ({
       ...prevOptions,
-      [optionLabel]: {
-        value: event.target.value,
-        label: selectLabel,
-      },
+      [optionLabel]: event.target.value,
     }));
   };
 
@@ -61,12 +72,26 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
   // 모두 변경되었을 경우 선택 아이탬 만드는 함수
   const handleSetSelectedItem = () => {
     if (Object.keys(selectedOptions).length === options.length) {
-      const existingItemIndex = selectedItems.findIndex((obj) => {
-        return Object.keys(selectedOptions).every((key) => {
-          return (
-            (obj[key] as ItemValue).value === selectedOptions[key].value &&
-            (obj[key] as ItemValue).label === selectedOptions[key].label
-          );
+      const existingItemIndex = selectedItems.findIndex((item) => {
+        return Object.entries(item).every(([key, value]) => {
+          console.log(value);
+          console.log(selectedOptions[key]);
+
+          // 옵션들이 아이탬으로 되었을때 생기는 고정적인 데이터에 대해 비교 x
+          if (
+            key === "count" ||
+            key === "price" ||
+            key === "id" ||
+            key === "imgSrc" ||
+            key === "name" ||
+            key === "deliveryFee" ||
+            key === "noDeliveryPrice" ||
+            key === "orderPrice"
+          ) {
+            return true;
+          }
+          // 제외속성이외 기존아이탬과 동일한 옵션인지 확인
+          return selectedOptions[key] === value;
         });
       });
 
@@ -75,6 +100,9 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
         setSelectedItems((prev) => {
           const newDatas = [...prev];
           newDatas[existingItemIndex].count += 1;
+          newDatas[existingItemIndex].orderPrice =
+            newDatas[existingItemIndex].count *
+            newDatas[existingItemIndex].price;
 
           return newDatas;
         });
@@ -83,7 +111,15 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
         const newItem = {
           ...selectedOptions,
           count: 1,
+          id,
+          imgSrc,
+          name,
+          deliveryFee,
+          price,
+          noDeliveryPrice,
+          orderPrice: price,
         };
+
         setSelectedItems((prev) => [...prev, newItem]);
       }
       setSelectedOptions({});
@@ -96,18 +132,19 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
   };
 
   // 수량 변경 함수
-  const handleChangeCount = (type: string, index: number) => {
+  const handleChangeCount = ({type,index} : {type: string, index: number}) => {
     //변경조건
     let num = 0;
     if (type === "up") num = 1;
     else if (type === "down") num = -1;
 
     setSelectedItems((prev) =>
-      prev.map((item, index1) => {
+      prev.map((item, prevIndex) => {
         //동작했을때 0개면 동작안하게
         if (item.count + num === 0) return item;
         //정상동작
-        return index === index1 ? { ...item, count: item.count + num } : item;
+        const newCount = item.count + num;
+        return prevIndex === index ? { ...item, count: newCount, orderPrice:item.price* newCount} : item;
       })
     );
   };
@@ -119,26 +156,63 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
       0
     );
     setTotalNums(totalItemCount);
+    console.log(selectedItems);
   }, [selectedItems]);
+
+  // count를 제외한 속성 비교해서 없으면 추가하고 있으면 count값 몰아줌
+  const mergeArrays = ({arr1,arr2}:{arr1: ItemRequire[], arr2: ItemRequire[]}) => {
+    const result = [...arr1];
+
+    arr2.forEach((obj2) => {
+      const matchingObjIndex = result.findIndex(
+        (obj1) =>
+          obj1.color === obj2.color &&
+          obj1.size === obj2.size &&
+          obj1.id === obj2.id &&
+          obj1.imgSrc === obj2.imgSrc &&
+          obj1.name === obj2.name &&
+          obj1.deliveryFee === obj2.deliveryFee &&
+          obj1.price === obj2.price &&
+          obj1.noDeliveryPrice === obj2.noDeliveryPrice
+      );
+
+      if (matchingObjIndex !== -1) {
+        result[matchingObjIndex].count += obj2.count;
+        result[matchingObjIndex].orderPrice =
+          result[matchingObjIndex].count * obj2.price;
+      } else {
+        result.push(obj2);
+      }
+    });
+
+    return result;
+  };
 
   //장바구니 버튼 클릭시
   const AddToShoppingBag = () => {
     if (userInfo.name === null) return navigate("/login");
+    const shoppingBagData = sessionStorage.getItem("shoppingBag");
 
-    sessionStorage.setItem("shoppingBag", JSON.stringify(selectedItems));
+    if (shoppingBagData !== null) {
+      const newArray = mergeArrays({arr1:selectedItems, arr2:JSON.parse(shoppingBagData)});
+      sessionStorage.setItem("shoppingBag", JSON.stringify(newArray));
+    } else {
+      sessionStorage.setItem("shoppingBag", JSON.stringify(selectedItems));
+    }
   };
+
   return (
     <SelectSection>
       {options.map((option) => (
         <div key={option.label}>
           <select
-            value={selectedOptions[option.label]?.value || ""}
+            value={selectedOptions[option.label] || ""}
             onChange={(e) => handleOptionChange(option.label, e)}
           >
             <option value="">Select {option.label}</option>
             {option.values.map((value) => (
-              <option key={value.value} value={value.value}>
-                {value.label}
+              <option key={value} value={value}>
+                {value}
               </option>
             ))}
           </select>
@@ -147,37 +221,25 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({ options, price }) => {
       <p>You have selected:</p>
       {
         <div className="items">
-          {selectedItems.map((item, index) => (
-            <div className="item" key={index}>
-              {Object.entries(item).map(([key, value]) => {
-                const ITem = item[key] as ItemValue;
-                console.log(item);
-                console.log(selectedItems);
-                return (
-                  <div key={key}>
-                    {key === "count" ? (
-                      <div>
-                        <button onClick={() => handleChangeCount("up", index)}>
-                          ▲
-                        </button>
+          {selectedItems.map((item, index) => {
+            return (
+              <div className="item" key={index}>
+                <span>{item.color}</span>
+                <span>{item.size}</span>
+                <div>
+                  <button onClick={() => handleChangeCount({type:"down", index:index})}>
+                    ▼
+                  </button>
+                  {item.count}
+                  <button onClick={() => handleChangeCount({type:"up", index:index})}>
+                    ▲
+                  </button>
+                </div>
 
-                        {item.count}
-                        <button
-                          onClick={() => handleChangeCount("down", index)}
-                        >
-                          ▼
-                        </button>
-                      </div>
-                    ) : (
-                      <span> {ITem.label}</span>
-                    )}
-                  </div>
-                );
-              })}
-
-              <button onClick={() => handleDeleteItem(index)}>x</button>
-            </div>
-          ))}
+                <button onClick={() => handleDeleteItem(index)}>x</button>
+              </div>
+            );
+          })}
         </div>
       }
 
