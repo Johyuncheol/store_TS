@@ -7,3 +7,18 @@ export const getShoppingBag=async()=>{
 
     return res.data
 }
+
+interface ItemValue {
+    value: string;
+    label: string;
+  }
+
+interface ItemRequire {
+    [key: string]: string | number | ItemValue;
+    count: number;
+  }
+
+export const putInShoppingBag=async(data :string)=>{
+    const res = await axios.post(`${BASE_URL}/shoppingBag`,data);
+
+}

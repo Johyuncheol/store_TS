@@ -6,8 +6,26 @@ import Carousel from "../components/detail/Carousel";
 
 import AskPageNation from "../components/detail/AskPageNation";
 import ReviewPageNation from "../components/detail/ReviewPageNation";
-
+import ItemSelection from "../components/detail/SelectItem";
 const Detail: React.FC = () => {
+  const customOptions = [
+    {
+      label: "Color",
+      values: [
+        { value: "C", label: "차콜" },
+        { value: "B", label: "블루" },
+        { value: "G", label: "그레이" },
+      ],
+    },
+    {
+      label: "Size",
+      values: [
+        { value: "S", label: "S" },
+        { value: "M", label: "M" },
+        { value: "L", label: "L" },
+      ],
+    },
+  ];
   const location = useLocation();
   const id = location.pathname.split("/")[2];
 
@@ -93,32 +111,14 @@ const Detail: React.FC = () => {
               <span className="large wordBreak">{data?.name}</span>
               <span className="middle">{data?.price}</span>
             </div>
+          </div>
 
-            <select>
-              <option>SIZE</option>
-              <option value="S">S</option>
-              <option value="L">L</option>
-              <option value="M">M</option>
-            </select>
+          <div className="option2">
+            <ItemSelection options={customOptions} price={10000} />
 
-            <select>
-              <option>COLOR</option>
-              <option value="S">RED</option>
-              <option value="L">GREEN</option>
-              <option value="M">WHITE</option>
-            </select>
+   
 
-            <div>
-              <span>총 상품 금액</span>
-              <span>10000</span>
-            </div>
 
-            <div className="btnWrap">
-              <Button state={false} className="">
-                장바구니에 담기
-              </Button>
-              <Button state={true}>바로 구매하기</Button>
-            </div>
           </div>
         </div>
       </div>
@@ -198,9 +198,18 @@ const DetailSection = styled.section`
       }
 
       .option {
+        top: 5rem;
+        display: flex;
+
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .option2 {
         position: sticky;
         top: 5rem;
         display: flex;
+
         flex-direction: column;
         gap: 1rem;
       }
@@ -255,16 +264,7 @@ const DetailArticle = styled.article<{ state: boolean }>`
   }
 `;
 
-const Button = styled.button<{ state: boolean }>`
-  width: 10rem;
-  border: 1px solid black;
-  text-align: center;
-  line-height: 3rem;
-  background-color: ${(props) => (props.state ? "black" : "white")};
-  color: ${(props) => (props.state ? "white" : "black")};
 
-  cursor: pointer;
-`;
 
 const PageNationBox = styled.div`
   width: 100%;

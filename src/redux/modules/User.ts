@@ -26,6 +26,9 @@ const UserInfoSlice = createSlice({
         LOGOUT_USER:(state,action)=>{
             state.name=action.payload.name;
             sessionStorage.removeItem("userInfo");
+            //clear로 한번에 지울수있지만
+            //추후 지워지면 안되는 정보를 담을수도있어서 우선은 유지
+            sessionStorage.clear();
         }
     }
 })

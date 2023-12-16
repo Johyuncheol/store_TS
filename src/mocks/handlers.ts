@@ -311,4 +311,16 @@ export const handlers = [
       });
     }
   }),
+
+  http.post("/api/shoppingBag", ({request}) => {
+    
+    console.log(request)
+    
+    return HttpResponse.json(data, {
+      status: 201,
+      statusText: "Success to save on Bag",
+    });
+  }),
+
+
 ];
