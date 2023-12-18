@@ -4,11 +4,11 @@ import styled from "styled-components";
 import menuData from "../../staticData/json/menuCategory.json";
 
 interface MenuModalProps {
-  setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
   type: string;
 }
 
-const MenuModal: React.FC<MenuModalProps> = ({ setModalShow, type }) => {
+const MenuModal: React.FC<MenuModalProps> = ({ onClose, type }) => {
   interface Category {
     mainCategory: string;
     subCategory: string[];
@@ -17,13 +17,13 @@ const MenuModal: React.FC<MenuModalProps> = ({ setModalShow, type }) => {
   const [categoryInfo, setCategoryInfo] = useState<Category>();
 
   useEffect(() => {
-    if (type === "Women") setCategoryInfo(menuData.Women);
-    if (type === "Man") setCategoryInfo(menuData.Man);
-    if (type === "Interior") setCategoryInfo(menuData.Interior);
+    if (type === "women") setCategoryInfo(menuData.Women);
+    if (type === "man") setCategoryInfo(menuData.Man);
+    if (type === "interior") setCategoryInfo(menuData.Interior);
   }, [type, menuData]);
 
   return (
-    <ModalSection onMouseLeave={() => setModalShow(false)}>
+    <ModalSection onMouseLeave={onClose}>
       <div className="category">
         <Link to={""} className="mainCategory">
           {categoryInfo?.mainCategory}
@@ -35,7 +35,7 @@ const MenuModal: React.FC<MenuModalProps> = ({ setModalShow, type }) => {
               to={`category/${type.toLowerCase() + "/" + item.toLowerCase()}`}
               className="detailCategory"
               key={index}
-              onClick={()=>setModalShow(false)}
+              onClick={onClose}
             >
               {item}
             </Link>
@@ -50,9 +50,9 @@ export default MenuModal;
 
 const ModalSection = styled.section`
   display: flex;
-  position:fixed;
-  left:0;
-  width:100vw;
+  position: fixed;
+  left: 0;
+  width: 100vw;
   height: 300px;
   background-color: #eeeeeef9;
   padding: 0 2rem;
@@ -61,7 +61,7 @@ const ModalSection = styled.section`
   border-bottom: 1px solid black;
 
   z-index: 10;
-  
+
   .category {
     display: flex;
     flex-direction: column;

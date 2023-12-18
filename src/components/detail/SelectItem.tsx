@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/config";
 import { useNavigate } from "react-router-dom";
-import AlertModalCard from "../common/AlertModalCard";
+import AlertModalCard from "../common/modalCard/AlertModalCard";
 import { useModal } from "../../hooks/useModal";
-import { ModalType } from "../../hooks/useModal";
 
 interface ItemSelectionProps {
   options: {
@@ -229,7 +228,7 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
 
     setModalState('장바구니에 담기 완료')
     setSelectedItems([]);
-    AlertModal.openModal(ModalType.AlertModal)
+    AlertModal.openModal()
   };
 
 
