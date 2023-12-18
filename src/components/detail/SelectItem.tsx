@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/config";
 import { useNavigate } from "react-router-dom";
+import AlertModalCard from "../common/AlertModalCard";
+import { useModal } from "../../hooks/useModal";
+import { ModalType } from "../../hooks/useModal";
 
 interface ItemSelectionProps {
   options: {
@@ -45,12 +48,15 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
   deliveryFee,
   noDeliveryPrice,
 }) => {
-  console.log(price);
   const [selectedOptions, setSelectedOptions] = useState<ItemRequire2>({});
   const [selectedItems, setSelectedItems] = useState<ItemRequire[]>([]);
   const [totalNums, setTotalNums] = useState(0);
-
+  const [modalState, setModalState] = useState<string>('');
   const userInfo = useSelector((state: RootState) => state.User);
+
+  const AlertModal = useModal({ isOpen: false });
+  const modal2 = useModal({ isOpen: false });
+
   const navigate = useNavigate();
 
   // 셀렉트 박스 변경함수
@@ -132,7 +138,13 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
   };
 
   // 수량 변경 함수
-  const handleChangeCount = ({type,index} : {type: string, index: number}) => {
+  const handleChangeCount = ({
+    type,
+    index,
+  }: {
+    type: string;
+    index: number;
+  }) => {
     //변경조건
     let num = 0;
     if (type === "up") num = 1;
@@ -144,7 +156,9 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
         if (item.count + num === 0) return item;
         //정상동작
         const newCount = item.count + num;
-        return prevIndex === index ? { ...item, count: newCount, orderPrice:item.price* newCount} : item;
+        return prevIndex === index
+          ? { ...item, count: newCount, orderPrice: item.price * newCount }
+          : item;
       })
     );
   };
@@ -160,7 +174,13 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
   }, [selectedItems]);
 
   // count를 제외한 속성 비교해서 없으면 추가하고 있으면 count값 몰아줌
-  const mergeArrays = ({arr1,arr2}:{arr1: ItemRequire[], arr2: ItemRequire[]}) => {
+  const mergeArrays = ({
+    arr1,
+    arr2,
+  }: {
+    arr1: ItemRequire[];
+    arr2: ItemRequire[];
+  }) => {
     const result = [...arr1];
 
     arr2.forEach((obj2) => {
@@ -193,16 +213,30 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
     if (userInfo.name === null) return navigate("/login");
     const shoppingBagData = sessionStorage.getItem("shoppingBag");
 
+
+    if(selectedItems.length===0) return
+
+
     if (shoppingBagData !== null) {
-      const newArray = mergeArrays({arr1:selectedItems, arr2:JSON.parse(shoppingBagData)});
+      const newArray = mergeArrays({
+        arr1: selectedItems,
+        arr2: JSON.parse(shoppingBagData),
+      });
       sessionStorage.setItem("shoppingBag", JSON.stringify(newArray));
     } else {
       sessionStorage.setItem("shoppingBag", JSON.stringify(selectedItems));
     }
+
+    setModalState('장바구니에 담기 완료')
+    setSelectedItems([]);
+    AlertModal.openModal(ModalType.AlertModal)
   };
+
 
   return (
     <SelectSection>
+      {AlertModal.modalState.isOpen && <AlertModalCard onClose={AlertModal.closeModal} detail={modalState}/>}
+      
       {options.map((option) => (
         <div key={option.label}>
           <select
@@ -227,11 +261,19 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
                 <span>{item.color}</span>
                 <span>{item.size}</span>
                 <div>
-                  <button onClick={() => handleChangeCount({type:"down", index:index})}>
+                  <button
+                    onClick={() =>
+                      handleChangeCount({ type: "down", index: index })
+                    }
+                  >
                     ▼
                   </button>
                   {item.count}
-                  <button onClick={() => handleChangeCount({type:"up", index:index})}>
+                  <button
+                    onClick={() =>
+                      handleChangeCount({ type: "up", index: index })
+                    }
+                  >
                     ▲
                   </button>
                 </div>

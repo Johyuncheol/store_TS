@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import MainCarousel from "../components/main/MainCarousel";
+/* import MainCarousel from "../components/main/MainCarousel";
 import CategoryNav from "../components/main/CategoryNav";
 import SmallCarousel from "../components/main/SmallCarousel";
-import HalfCarousel from "../components/main/HalfCarousel";
+import HalfCarousel from "../components/main/HalfCarousel"; */
 import { getMain } from "../api/PageInfo";
 import { MAIN_CACHE } from "../redux/modules/Cache";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/config";
+import S_MainCarousel from "../components/main/skeleton/MainCarousel";
+import S_HalfCarousel from "../components/main/skeleton/HalfCarousel";
+import S_SmallCarousel from "../components/main/skeleton/SmallCarousel";
+
+const MainCarousel = React.lazy(
+  () => import("../components/main/MainCarousel")
+);
+const CategoryNav = React.lazy(() => import("../components/main/CategoryNav"));
+const SmallCarousel = React.lazy(
+  () => import("../components/main/SmallCarousel")
+);
+const HalfCarousel = React.lazy(
+  () => import("../components/main/HalfCarousel")
+);
 
 const Main: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,17 +61,15 @@ const Main: React.FC = () => {
       mainData.Sale.length &&
       mainData.SaleRelated.length
     ) {
-
       setData(mainData);
     } else {
-
       fetchData();
     }
   }, []);
-  console.log(mainData)
+  console.log(mainData);
   return (
     <section>
-      {data && (
+      {data ? (
         <>
           <MainCarousel adata={data.MainBanner} />
 
@@ -107,6 +119,34 @@ const Main: React.FC = () => {
                 width={"20vw"}
                 height="18.156rem"
               />
+            </ItemBox>
+          </ItemSection>
+        </>
+      ) : (
+        <>
+          <S_MainCarousel />
+
+          <CategoryNav />
+
+          <ItemSection>
+            <ItemBox>
+              <S_SmallCarousel />
+
+              <S_SmallCarousel />
+            </ItemBox>
+
+            <ItemBox1>
+              <span className="contentsName">무심한듯 가볍게</span>
+
+              <S_HalfCarousel />
+
+              <S_SmallCarousel />
+            </ItemBox1>
+
+            <ItemBox>
+              <S_SmallCarousel />
+
+              <S_SmallCarousel />
             </ItemBox>
           </ItemSection>
         </>

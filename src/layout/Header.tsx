@@ -13,6 +13,7 @@ const Header: React.FC = () => {
 
   const userInfo = useSelector((state: RootState) => state.User);
 
+
   const [user, setUser] = useState(userInfo);
   const [modalShow, setModalShow] = useState(false);
   const [modalCategory, setModalCategory] = useState("");
@@ -74,6 +75,7 @@ const Header: React.FC = () => {
 
   return (
     <HeaderSection ref={BGColor}>
+      
       <div className="inner">
         <div className="circle" />
         <Link to="/" className="title">
@@ -85,6 +87,10 @@ const Header: React.FC = () => {
 
         <div className="options">
           <div className="clothes-home-tech-clothes-home-tech3">
+            <div className="search">
+              <img src="https://cdn.pixabay.com/photo/2015/12/08/17/38/magnifying-glass-1083373_1280.png" />
+              <div className="underLine" />
+            </div>
             <Link to="/best">MyLike</Link>
             <Link to="/mybag">MyBag</Link>
             <Link to="/best">MyPage</Link>
@@ -167,6 +173,19 @@ const HeaderSection = styled.section`
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
+
+  .search {
+    display: flex;
+
+    padding-top: 2px;
+    img {
+      width: 1.5rem;
+    }
+    .underLine {
+      width: 7rem;
+      border-bottom: 1px solid #551a8b;
+    }
   }
   .clothes-home-tech-clothes-home-tech {
     display: flex;
