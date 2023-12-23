@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { getCategoryData } from "../api/Category";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../hooks/usePageNation";
+
+
 const Category: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const Category: React.FC = () => {
     currentPage,
     setCurrentPage,
     movePageBtnHandler,
+    setKey
   } = usePagination(() =>
     getCategoryData(`${categoryName}/${selectedMenu.toLowerCase()}`,currentPage),20
   );
@@ -41,6 +44,7 @@ const Category: React.FC = () => {
   };
 
   useEffect(() => {
+    setKey([categoryName,detail,currentPage])
     if (categoryName === "women") setCategoryInfo(menuData.Women);
     if (categoryName === "man") setCategoryInfo(menuData.Man);
     if (categoryName === "interior") setCategoryInfo(menuData.Interior);

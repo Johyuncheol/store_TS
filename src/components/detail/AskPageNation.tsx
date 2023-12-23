@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getAsk } from "../../api/PageInfo";
+import { getAsk } from "../../api/Detail";
 import { usePagination } from "../../hooks/usePageNation";
 
 const AskPageNation: React.FC = () => {

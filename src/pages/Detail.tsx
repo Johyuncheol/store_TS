@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getDetail } from "../api/PageInfo";
+import { getDetail } from "../api/Detail";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Carousel from "../components/detail/Carousel";

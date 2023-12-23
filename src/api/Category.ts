@@ -1,13 +1,10 @@
 import { BASE_URL } from "./const";
 import axios from "axios";
 
-
-
 export const getCategoryData = async (path:string,page:number) => {
     try {
-      console.log(path)
-      const res = await axios.get(`${BASE_URL}/category/${path}?&page=${page}`);
-        console.log(res.data)
+      const res = await axios.get(`${BASE_URL}/category/${path}?page=${page}`);
+        console.log("ㅁㅁㄷㅇㅁㄴㅇ")
 
       return res
     } catch (error) {

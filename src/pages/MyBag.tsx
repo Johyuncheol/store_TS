@@ -36,7 +36,7 @@ const MyBag = () => {
   //세션스토리지에서 데이터가져오기 
   const GetBagData = async () => {
     const shoppingBagData = sessionStorage.getItem("shoppingBag");
-    setData(JSON.parse(shoppingBagData ?? "null"));
+    setData(JSON.parse(shoppingBagData ?? "[]"));
   };
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const MyBag = () => {
   };
 
 
-
+  console.log(data)
 // 아이템 수량 변경 함수 
   const ChangeNumOfItem = ({index,type}: {index: number;type: string;}) => {
     let num = 0;
@@ -174,7 +174,10 @@ const MyBag = () => {
                 <div className="menuItem">배송비</div>
               </div>
 
-              {data.map((item, index) => {
+{
+ 
+}
+              {data?.map((item, index) => {
                 return (
                   <div className="layout" key={index}>
                     <div className="item">

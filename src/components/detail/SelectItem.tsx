@@ -5,6 +5,7 @@ import { RootState } from "../../redux/config";
 import { useNavigate } from "react-router-dom";
 import AlertModalCard from "../common/modalCard/AlertModalCard";
 import { useModal } from "../../hooks/useModal";
+import { putInShoppingBagAPI } from "../../api/ShoppingBag";
 
 interface ItemSelectionProps {
   options: {
@@ -212,7 +213,8 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
     if (userInfo.name === null) return navigate("/login");
     const shoppingBagData = sessionStorage.getItem("shoppingBag");
 
-
+    if(shoppingBagData)
+    putInShoppingBagAPI(JSON.parse(shoppingBagData))
     if(selectedItems.length===0) return
 
 

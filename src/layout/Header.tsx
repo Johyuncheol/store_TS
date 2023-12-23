@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/config";
 import { useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../redux/modules/User";
-import { LogoutAPI } from "../api/Login";
+import { LogoutAPI } from "../api/Auth";
 import MenuModalCard from "../components/header/MenuModalCard";
 import SearchModalCard from "../components/header/SearchModalCard";
 import { useModal } from "../hooks/useModal";
@@ -84,7 +84,7 @@ const Header: React.FC = () => {
               <div className="underLine" />
             </div>
             <Link to="/best">MyLike</Link>
-            <Link to="/mybag">MyBag</Link>
+            <Link to="/user/mybag">MyBag</Link>
             <Link to="/best">MyPage</Link>
             {user.name === null ? (
               <Link to="/login">Login</Link>
@@ -106,7 +106,7 @@ const Header: React.FC = () => {
                 INTERIOR
               </span>
 
-              <Link to="/mybag" onMouseOver={menuModal.closeModal}>
+              <Link to="/user/mybag" onMouseOver={menuModal.closeModal}>
                 Event
               </Link>
               <Link to="/best" onMouseOver={menuModal.closeModal}>

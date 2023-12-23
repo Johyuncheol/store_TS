@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { CheckIsLoginAPI } from "../api/Login";
+import { CheckIsLoginAPI } from "../api/Auth";
 
 const PrivateRouter: React.FC = () => {
   const [auth, setAuth] = useState<number>();

@@ -8,15 +8,41 @@ import manData from "../mocks/man.json";
 import itemData from "../mocks/item.json";
 import askData from "../mocks/ask.json";
 import reviewData from "../mocks/review.json";
+import userData from "../mocks/user.json";
+
 export const handlers = [
-  http.get("/api", () => {
+  http.get("/api/main", () => {
+    console.log(123)
     return HttpResponse.json(mainData, {
       status: 201,
-      statusText: "Success to main get",
+      statusText: "Success to get main",
     });
   }),
 
-  http.post("/api/isLogin", ({ cookies }) => {
+  http.post("/api/auth/register", async ({ request }) => {
+    const info = await request.formData();
+
+    const userId = info.get("id") as string;
+    const userPW = info.get("password") as string;
+    const userNickName = info.get("nickName") as string;
+
+    const newUser = {
+      id: userId,
+      password: userPW,
+      name: userNickName,
+    };
+
+    userData.push(newUser);
+    console.log(userData);
+
+
+    return HttpResponse.json(null, {
+      status: 201,
+      statusText: "Success to register",
+    });
+  }),
+
+  http.post("/api/auth/isLogin", ({ cookies }) => {
     // 리프레시 토큰이 다를때
     // 정상 사용자가 아니거나 리프레시 토큰 만료 시
 
@@ -31,7 +57,8 @@ export const handlers = [
     //엑세스 토큰 만료 -> 재발급 해줌
     else if (cookies.accessToken !== "access") {
       // 기존엑세스 토큰에 대한 서명을 검증해서 비교 해야할것같음
-      return new HttpResponse("nickname", {
+      const resdata = { name: "nickName" };
+      return new HttpResponse(JSON.stringify(resdata), {
         status: 205,
         statusText: "Change accessToken",
         headers: {
@@ -42,7 +69,8 @@ export const handlers = [
 
     // 이상없을때 동작
     else {
-      return new HttpResponse("nickname", {
+      const resdata = { name: "nickName" };
+      return new HttpResponse(JSON.stringify(resdata), {
         status: 201,
         statusText: "Logined User",
       });
@@ -56,14 +84,13 @@ export const handlers = [
     });
   }),
 
-  http.post("/api/login", async ({ request }) => {
-    let user;
+  http.post("/api/auth/login", async ({ request }) => {
     try {
       const info = await request.formData();
 
       const userId = info.get("id");
       const userPW = info.get("password");
-      user = data.find(({ id }) => id === userId);
+      const user = data.find(({ id }) => id === userId);
       if (user) {
         if (user.password === userPW) {
           const resdata = { name: user.name };
@@ -88,14 +115,11 @@ export const handlers = [
         });
       }
     } catch (error) {
-      if (user) {
-        return new HttpResponse("비밀번호가 일치하지않습니다", { status: 201 });
-      }
-      return new HttpResponse("존재하지않는 유저입니다", { status: 200 });
+      return new HttpResponse("로그인 에러", { status: 403 });
     }
   }),
 
-  http.post("/api/logout", () => {
+  http.post("/api/auth/logout", () => {
     document.cookie =
       "accessToken=access; expires=Thu, 22 April 1997 00:00:00; secure";
     document.cookie =
@@ -125,8 +149,8 @@ export const handlers = [
       price: number;
       carouselImg: string[];
       detailImg: string;
-      deliveryFee:number;
-      noDeliveryPrice:number;
+      deliveryFee: number;
+      noDeliveryPrice: number;
     }
     const findData = itemData.item.find((item: itemRequire) => item.id === id);
 
@@ -162,7 +186,7 @@ export const handlers = [
 
     const data = askData as AskData;
 
-      console.log(data[id].length)
+    console.log(data[id].length);
     if (page === 1) {
       const findData = data[id].slice(0, 6);
       const sendData: response = {
@@ -182,7 +206,7 @@ export const handlers = [
 
       return HttpResponse.json(sendData, {
         status: 202,
-        statusText: `Success to get data`,
+        statusText: `Success to get ask`,
       });
     }
   }),
@@ -260,8 +284,8 @@ export const handlers = [
       brand: string;
       name: string;
       price: number;
-      deliveryFee:number;
-      noDeliveryPrice:number;
+      deliveryFee: number;
+      noDeliveryPrice: number;
     }
 
     interface response {
@@ -312,15 +336,12 @@ export const handlers = [
     }
   }),
 
-  http.post("/api/shoppingBag", ({request}) => {
-    
-    console.log(request)
-    
+  http.post("/api/shoppingBag", ({ request }) => {
+    console.log(request);
+
     return HttpResponse.json(data, {
       status: 201,
       statusText: "Success to save on Bag",
     });
   }),
-
-
 ];

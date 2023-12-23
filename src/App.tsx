@@ -10,8 +10,8 @@ import MyBag from "./pages/MyBag";
 import NotFound from "./pages/NotFound";
 import Category from "./pages/Category";
 import Detail from "./pages/Detail";
-
-import { putInShoppingBag } from "./api/user";
+import Register from "./pages/Register";
+import { putInShoppingBagAPI } from "./api/ShoppingBag";
 
 function App() {
   useEffect(() => {
@@ -19,7 +19,7 @@ function App() {
       const shoppingBagData = sessionStorage.getItem("shoppingBag");
 
       if (shoppingBagData) {
-        putInShoppingBag(shoppingBagData);
+        putInShoppingBagAPI(shoppingBagData);
       }
     };
 
@@ -32,6 +32,7 @@ function App() {
 
   return (
     <>
+      <Suspense fallback={<div>Loading...</div>}>
       <Globalstyles />
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -40,15 +41,17 @@ function App() {
           <Route path="detail/:id" element={<Detail />} />
 
           {/* private Router */}
-          <Route path="/" element={<PrivateRouter />}>
-            <Route path="/mybag" element={<MyBag />} />
+          <Route path="/user" element={<PrivateRouter />}>
+            <Route path="/user/mybag" element={<MyBag />} />
           </Route>
         </Route>
 
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
     </>
   );
 }

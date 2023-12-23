@@ -27,7 +27,7 @@ const Input: React.FC<InputRequire> = ({ type }) => {
       <div className="inputArea">
         <input
           type={isShowPW}
-          placeholder="아이디"
+          placeholder={type}
           className="input"
           value={inputData}
           name={type}

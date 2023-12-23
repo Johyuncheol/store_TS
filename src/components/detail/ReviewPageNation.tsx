@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getReview } from "../../api/PageInfo";
+import { getReview } from "../../api/Detail";
 import { usePagination } from "../../hooks/usePageNation";
 
 const ReviewPageNation: React.FC = () => {

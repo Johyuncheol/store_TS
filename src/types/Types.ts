@@ -38,4 +38,7 @@ interface itemsRequire {
   price: string;
 }
 
+
 export type pageNationType = askRequire | reviewRequire | itemsRequire;
+
+export type pageCacheType =  MainData

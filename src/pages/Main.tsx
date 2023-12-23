@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-/* import MainCarousel from "../components/main/MainCarousel";
-import CategoryNav from "../components/main/CategoryNav";
-import SmallCarousel from "../components/main/SmallCarousel";
-import HalfCarousel from "../components/main/HalfCarousel"; */
-import { getMain } from "../api/PageInfo";
-import { MAIN_CACHE } from "../redux/modules/Cache";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/config";
+import { getMainAPI } from "../api/Main";
 import S_MainCarousel from "../components/main/skeleton/MainCarousel";
 import S_HalfCarousel from "../components/main/skeleton/HalfCarousel";
 import S_SmallCarousel from "../components/main/skeleton/SmallCarousel";
+import { usePageCache } from "../hooks/usePageCache";
 
 const MainCarousel = React.lazy(
   () => import("../components/main/MainCarousel")
@@ -24,68 +18,35 @@ const HalfCarousel = React.lazy(
 );
 
 const Main: React.FC = () => {
-  const dispatch = useDispatch();
-  const mainData = useSelector((state: RootState) => state.Cache);
 
-  interface Item {
-    id: number;
-    imgSrc: string;
-  }
+  const { cacheData, setPageKey } = usePageCache(() =>
+    getMainAPI()
+  );
 
-  interface MainData {
-    MainBanner: Item[];
-    Popular: Item[];
-    PopularRelated: Item[];
-    Recommend: Item[];
-    RecommendRelated: Item[];
-    Sale: Item[];
-    SaleRelated: Item[];
-  }
+  useEffect(()=>{
+    setPageKey(['main'])
+  },[])
 
-  const [data, setData] = useState<MainData>();
 
-  // main 페이지 구성에 필요한 데이터를 받아오는 함수
-  const fetchData = async () => {
-    const res = await getMain();
-    setData(res);
-    dispatch(MAIN_CACHE(res));
-  };
-
-  useEffect(() => {
-    if (
-      mainData.MainBanner.length &&
-      mainData.Popular.length &&
-      mainData.PopularRelated.length &&
-      mainData.Recommend.length &&
-      mainData.RecommendRelated.length &&
-      mainData.Sale.length &&
-      mainData.SaleRelated.length
-    ) {
-      setData(mainData);
-    } else {
-      fetchData();
-    }
-  }, []);
-  console.log(mainData);
   return (
     <section>
-      {data ? (
+      {cacheData ? (
         <>
-          <MainCarousel adata={data.MainBanner} />
+          <MainCarousel adata={cacheData.MainBanner} />
 
           <CategoryNav />
 
           <ItemSection>
             <ItemBox>
               <SmallCarousel
-                adata={data.PopularRelated}
+                adata={cacheData.PopularRelated}
                 category={"요즘 뜨는 제품"}
                 width={"20vw"}
                 height="18.156rem"
               />
 
               <SmallCarousel
-                adata={data.PopularRelated}
+                adata={cacheData.PopularRelated}
                 category={"요즘 뜨는 제품"}
                 width={"20vw"}
                 height="18.156rem"
@@ -95,10 +56,10 @@ const Main: React.FC = () => {
             <ItemBox1>
               <span className="contentsName">무심한듯 가볍게</span>
 
-              <HalfCarousel adata={data.Recommend} />
+              <HalfCarousel adata={cacheData.Recommend} />
 
               <SmallCarousel
-                adata={data.RecommendRelated}
+                adata={cacheData.RecommendRelated}
                 category={"MD 추천"}
                 width={"20vw"}
                 height="12.156rem"
@@ -107,14 +68,14 @@ const Main: React.FC = () => {
 
             <ItemBox>
               <SmallCarousel
-                adata={data.PopularRelated}
+                adata={cacheData.PopularRelated}
                 category={"요즘 뜨는 제품"}
                 width={"20vw"}
                 height="18.156rem"
               />
 
               <SmallCarousel
-                adata={data.PopularRelated}
+                adata={cacheData.PopularRelated}
                 category={"요즘 뜨는 제품"}
                 width={"20vw"}
                 height="18.156rem"
