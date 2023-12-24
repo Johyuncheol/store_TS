@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
+import { searchAPI } from "../../api/Search";
 interface SearchModalCardRequire {
   onClose: () => void;
 }
-const SearchModal: React.FC<SearchModalCardRequire> = ({onClose}) => {
+
+interface findRequire {
+  name: string;
+  id: string;
+}
+const SearchModal: React.FC<SearchModalCardRequire> = ({ onClose }) => {
+  const [searchInput, setSearchInput] = useState("");
+  const [findData, setfindData] = useState<findRequire[]>([]);
+
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  const changeInputAndSearch = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchInput(e.target.value);
+
+    // 이전에 설정된 timeout이 있다면 제거
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // 새로운 timeout 설정
+    timeoutId = setTimeout(async () => {
+      if (!e.target.value) {
+        setfindData([]);
+        return;
+      }
+      const res = await searchAPI(e.target.value, 1);
+      setfindData(res);
+    }, 1000); // 일정 시간(여기서는 500ms) 후에 API 호출
+  };
   return (
     <ModalOverlay>
       <ModalContent>
@@ -12,14 +42,15 @@ const SearchModal: React.FC<SearchModalCardRequire> = ({onClose}) => {
 
         <div className="contentsWrap">
           <div className="searchInput">
-            <input type="text" />
+            <input type="text" onChange={(e) => changeInputAndSearch(e)} />
             <img src="https://cdn.pixabay.com/photo/2015/12/08/17/38/magnifying-glass-1083373_1280.png" />
           </div>
           <div className="guess">
-            <span>12</span>
-            <span>12</span>
-            <span>12</span>
-            <span>12</span>
+            {findData.length ? (
+              findData?.map((item, index) => <span>{item.name}</span>)
+            ) : (
+              <div>추천 검색어</div>
+            )}
           </div>
         </div>
       </ModalContent>
@@ -57,7 +88,7 @@ export const ModalContent = styled.div`
   word-break: break-all;
 
   .contentsWrap {
-    padding : 3rem;
+    padding: 3rem;
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -71,7 +102,7 @@ export const ModalContent = styled.div`
       width: 90%;
       border: none;
       outline: none;
-      font-size:2rem;
+      font-size: 2rem;
     }
     img {
       width: 2rem;

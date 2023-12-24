@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-
 const MyBag = () => {
   const navigate = useNavigate();
 
@@ -32,8 +31,7 @@ const MyBag = () => {
     totalPrice: 0,
   });
 
-
-  //세션스토리지에서 데이터가져오기 
+  //세션스토리지에서 데이터가져오기
   const GetBagData = async () => {
     const shoppingBagData = sessionStorage.getItem("shoppingBag");
     setData(JSON.parse(shoppingBagData ?? "[]"));
@@ -41,23 +39,18 @@ const MyBag = () => {
 
   useEffect(() => {
     GetBagData();
-
-
-    //data의 개수가 장바구니페이지 처음들어왔을때가 최대라 data로 의존배열 안넣음
-    //넣게되면 개수변경마다 체크 상태 다풀림 
-    setCheckedItem(Array(data.length).fill(false));
   }, []);
 
+  useEffect(() => {
+    setCheckedItem(Array(data.length).fill(false));
+  }, [data.length]);
 
-
-  // 장바구니 데이터 변경시 세션의 데이터도 변경 
+  // 장바구니 데이터 변경시 세션의 데이터도 변경
   useEffect(() => {
     sessionStorage.setItem("shoppingBag", JSON.stringify(data));
   }, [data]);
 
-
-
-  //선택아이탬 변경시 종합정보 변경 
+  //선택아이탬 변경시 종합정보 변경
   useEffect(() => {
     setPayInfo(() => {
       const selectedItems = data.filter(
@@ -83,8 +76,7 @@ const MyBag = () => {
       };
       return newPayInfo;
     });
-  }, [checkedItem,data]);
-
+  }, [checkedItem, data]);
 
   //체크박스 변경
   const handleCheckboxChange = (index: number) => {
@@ -95,16 +87,15 @@ const MyBag = () => {
     });
   };
 
-
   //체크박스 전체변경
   const handleAllCheckboxChange = (state: boolean) => {
     setCheckedItem(Array(data.length).fill(!state));
     setAllCheckState(!state);
   };
 
-
-  // 아이템 삭제 
+  // 아이템 삭제
   const handleDeleteItems = () => {
+    console.log(checkedItem);
     setData((prevMyBagData) => {
       const newMyBagData = [...prevMyBagData].filter(
         (item, index) => checkedItem[index] === false
@@ -115,16 +106,20 @@ const MyBag = () => {
     });
   };
 
-
   // 담은 상품없을때
   const handleNavigate = () => {
     navigate("/best");
   };
 
-
-  console.log(data)
-// 아이템 수량 변경 함수 
-  const ChangeNumOfItem = ({index,type}: {index: number;type: string;}) => {
+  console.log(data);
+  // 아이템 수량 변경 함수
+  const ChangeNumOfItem = ({
+    index,
+    type,
+  }: {
+    index: number;
+    type: string;
+  }) => {
     let num = 0;
     if (type === "up") num = 1;
     else if (type === "down") num = -1;
@@ -174,9 +169,6 @@ const MyBag = () => {
                 <div className="menuItem">배송비</div>
               </div>
 
-{
- 
-}
               {data?.map((item, index) => {
                 return (
                   <div className="layout" key={index}>
@@ -335,7 +327,7 @@ const MyBagSection = styled.section`
     }
     .item {
       display: flex;
-      justify-content: space-around;;
+      justify-content: space-around;
       align-items: center;
       font-weight: 500;
       height: 10rem;
@@ -343,7 +335,7 @@ const MyBagSection = styled.section`
 
     .Imgitem {
       display: flex;
-      gap:10px;
+      gap: 10px;
       align-items: center;
       font-weight: 500;
       height: 10rem;
