@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getReview } from "../../api/PageInfo";
+import { getReview } from "../../api/Detail";
 import { usePagination } from "../../hooks/usePageNation";
 
 const ReviewPageNation: React.FC = () => {
@@ -9,10 +9,8 @@ const ReviewPageNation: React.FC = () => {
     pageNums,
     currentPage,
     setCurrentPage,
-    ExistNext,
     movePageBtnHandler,
-  } = usePagination(getReview);
-  console.log(showData);
+  } = usePagination(() => getReview("0", currentPage), 6);
 
   const [showAllIndex, setShowAllIndex] = useState<number>();
   const showAll = (index: number) => {
@@ -47,9 +45,7 @@ const ReviewPageNation: React.FC = () => {
               <div className="main">
                 <div className="mainInfo">
                   <span>{item.option}</span>
-                  <span className="detail">
-                    {item.detail}
-                  </span>
+                  <span className="detail">{item.detail}</span>
                 </div>
                 <img src={item.imgUrl} />
               </div>
@@ -77,7 +73,6 @@ const ReviewPageNation: React.FC = () => {
             </span>
           );
         })}
-        {ExistNext && <span>...</span>}
         <span onClick={() => movePageBtnHandler("right")}>{">"}</span>
       </div>
     </PageNationBox>
@@ -118,7 +113,6 @@ const ReviewCard = styled.div<{ size: string }>`
   border-bottom: 1px solid black;
   padding: 10px 0;
   cursor: pointer;
-
   span {
     word-break: break-all;
   }
@@ -133,14 +127,14 @@ const ReviewCard = styled.div<{ size: string }>`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: ${(props) => (props.size === "true" ? "300px" : "")};
 
     .mainInfo {
       flex-direction: column;
     }
 
     .detail {
-      height: ${(props) => (props.size === "true" ? "" : "90px")};
-      overflow: hidden;
+      overflow: ${(props) => (props.size === "true" ? "hidden" : "")};
     }
   }
 

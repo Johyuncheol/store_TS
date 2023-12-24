@@ -1,110 +1,117 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import MainCarousel from "../components/main/MainCarousel";
-import CategoryNav from "../components/main/CategoryNav";
-import SmallCarousel from "../components/main/SmallCarousel";
-import HalfCarousel from "../components/main/HalfCarousel";
-import { getMain } from "../api/PageInfo";
+import { getMainAPI } from "../api/Main";
 import S_MainCarousel from "../components/main/skeleton/MainCarousel";
 import S_HalfCarousel from "../components/main/skeleton/HalfCarousel";
 import S_SmallCarousel from "../components/main/skeleton/SmallCarousel";
+import { usePageCache } from "../hooks/usePageCache";
+
+const MainCarousel = React.lazy(
+  () => import("../components/main/MainCarousel")
+);
+const CategoryNav = React.lazy(() => import("../components/main/CategoryNav"));
+const SmallCarousel = React.lazy(
+  () => import("../components/main/SmallCarousel")
+);
+const HalfCarousel = React.lazy(
+  () => import("../components/main/HalfCarousel")
+);
+
 const Main: React.FC = () => {
-  interface Item {
-    id: number;
-    imgSrc: string;
-  }
 
-  interface MainData {
-    MainBanner: Item[];
-    Popular: Item[];
-    PopularRelated: Item[];
-    Recommend: Item[];
-    RecommendRelated: Item[];
-    Sale: Item[];
-    SaleRelated: Item[];
-  }
+  const { cacheData, setPageKey } = usePageCache(() =>
+    getMainAPI()
+  );
 
-  const [data, setData] = useState<MainData>();
+  useEffect(()=>{
+    setPageKey(['main'])
+  },[])
 
-  // main 페이지 구성에 필요한 데이터를 받아오는 함수
-  const fetchData = async () => {
-    const res = await getMain();
-    setData(res);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <section>
-      {data ? <MainCarousel adata={data.MainBanner} /> : <S_MainCarousel />}
+      {cacheData ? (
+        <>
+          <MainCarousel adata={cacheData.MainBanner} />
 
-      <CategoryNav />
+          <CategoryNav />
 
-      <ItemSection>
-        <ItemBox>
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}{" "}
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox>
+          <ItemSection>
+            <ItemBox>
+              <SmallCarousel
+                adata={cacheData.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
 
-        <ItemBox1>
-          <span className="contentsName">무심한듯 가볍게</span>
+              <SmallCarousel
+                adata={cacheData.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+            </ItemBox>
 
-          {data ? <HalfCarousel adata={data.Recommend} /> : <S_HalfCarousel />}
-          {data ? (
-            <SmallCarousel
-              adata={data.RecommendRelated}
-              category={"MD 추천"}
-              width={"20vw"}
-              height="12.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox1>
+            <ItemBox1>
+              <span className="contentsName">무심한듯 가볍게</span>
 
-        <ItemBox>
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}{" "}
-          {data ? (
-            <SmallCarousel
-              adata={data.PopularRelated}
-              category={"요즘 뜨는 제품"}
-              width={"20vw"}
-              height="18.156rem"
-            />
-          ) : (
-            <S_SmallCarousel />
-          )}
-        </ItemBox>
-      </ItemSection>
+              <HalfCarousel adata={cacheData.Recommend} />
+
+              <SmallCarousel
+                adata={cacheData.RecommendRelated}
+                category={"MD 추천"}
+                width={"20vw"}
+                height="12.156rem"
+              />
+            </ItemBox1>
+
+            <ItemBox>
+              <SmallCarousel
+                adata={cacheData.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+
+              <SmallCarousel
+                adata={cacheData.PopularRelated}
+                category={"요즘 뜨는 제품"}
+                width={"20vw"}
+                height="18.156rem"
+              />
+            </ItemBox>
+          </ItemSection>
+        </>
+      ) : (
+        <>
+          <S_MainCarousel />
+
+          <CategoryNav />
+
+          <ItemSection>
+            <ItemBox>
+              <S_SmallCarousel />
+
+              <S_SmallCarousel />
+            </ItemBox>
+
+            <ItemBox1>
+              <span className="contentsName">무심한듯 가볍게</span>
+
+              <S_HalfCarousel />
+
+              <S_SmallCarousel />
+            </ItemBox1>
+
+            <ItemBox>
+              <S_SmallCarousel />
+
+              <S_SmallCarousel />
+            </ItemBox>
+          </ItemSection>
+        </>
+      )}
     </section>
   );
 };

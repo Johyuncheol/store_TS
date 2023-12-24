@@ -15,13 +15,13 @@ export const useInavalidate = () => {
   const [Message, setMessage] = useState<string>(""); // 유효성검사 메세지 
 
   //입력값 변경함수 
-  const changeInput = async(type: string, e:React.ChangeEvent<HTMLInputElement>) => {
-    await setInputData(e.target.value);
-    await checkVaildation(type,e.target.value);
+  const changeInput = ({type,e}:{type: string, e:React.ChangeEvent<HTMLInputElement>}) => {
+     setInputData(e.target.value);
+     checkVaildation({type:type,data:e.target.value});
   };
 
   //유효성검사 함수 
-  const checkVaildation = (type: string, data: string) => {
+  const checkVaildation = ({type,data}:{type: string, data: string}) => {
     if (type === "id") {
       let regex = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
       const validateRes = regex.test(data);

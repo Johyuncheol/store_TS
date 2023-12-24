@@ -1,62 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/config";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../redux/modules/User";
-import { LogoutAPI } from "../api/Login";
-import MenuModal from "../components/header/MenuModal";
-import { CheckIsLoginAPI } from "../api/Login";
+import { LOGOUT_USER } from "../redux/modules/User";
+import { LogoutAPI } from "../api/Auth";
+import MenuModalCard from "../components/header/MenuModalCard";
+import SearchModalCard from "../components/header/SearchModalCard";
+import { useModal } from "../hooks/useModal";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
 
   const userInfo = useSelector((state: RootState) => state.User);
+  const searchModal = useModal({ isOpen: false });
+  const menuModal = useModal({ isOpen: false });
 
   const [user, setUser] = useState(userInfo);
-  const [modalShow, setModalShow] = useState(false);
   const [modalCategory, setModalCategory] = useState("");
 
   const BGColor = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
-  //로그아웃 함수 
+  //로그아웃 함수
   const Logout = () => {
     LogoutAPI();
-    dispatch(setUserInfo({ name: null }));
+    dispatch(LOGOUT_USER({ name: null }));
     setUser({ name: null });
 
     alert("로그아웃 되었습니다!");
-
   };
 
-
-  const goLogin = () => {
-    if (
-      window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")
-    ) {
-      navigate("/login");
-    }
-  };
-
-  // 새로고침시 로그인유지 함수 
-  const authenticated = async () => {
-    const res = await CheckIsLoginAPI();
-
-    if (res) {
-      if (res.data === "") {
-        dispatch(setUserInfo({ name: null }));
-        setUser({ name: null });
-      } else {
-        dispatch(setUserInfo({ name: res.data }));
-        setUser({ name: res.data });
-      }
-    }
-  };
 
   useEffect(() => {
-    authenticated();
     const handleScroll = () => {
       // 현재 스크롤 위치가 맨 위인지 확인
       const isAtTop = window.scrollY === 0;
@@ -81,18 +57,17 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  //상세카테고리 모달창 open 
+  //상세카테고리 모달창 open
   const handleOpenModal = (type: string) => {
-    if (type === "") {
-      setModalShow(false);
-    } else {
-      setModalCategory(type);
-      setModalShow(true);
-    }
+    setModalCategory(type);
+    menuModal.openModal();
   };
 
   return (
     <HeaderSection ref={BGColor}>
+      {searchModal.modalState.isOpen && (
+        <SearchModalCard onClose={searchModal.closeModal} />
+      )}
       <div className="inner">
         <div className="circle" />
         <Link to="/" className="title">
@@ -104,8 +79,12 @@ const Header: React.FC = () => {
 
         <div className="options">
           <div className="clothes-home-tech-clothes-home-tech3">
+            <div className="search" onClick={searchModal.openModal}>
+              <img src="https://cdn.pixabay.com/photo/2015/12/08/17/38/magnifying-glass-1083373_1280.png" />
+              <div className="underLine" />
+            </div>
             <Link to="/best">MyLike</Link>
-            <Link to="/mybag">MyBag</Link>
+            <Link to="/user/mybag">MyBag</Link>
             <Link to="/best">MyPage</Link>
             {user.name === null ? (
               <Link to="/login">Login</Link>
@@ -116,26 +95,29 @@ const Header: React.FC = () => {
             )}
           </div>
 
-          <div onMouseLeave={() => handleOpenModal("")}>
+          <div onMouseLeave={menuModal.closeModal}>
             <div className="clothes-home-tech-clothes-home-tech2">
-              <Link to="/best" onMouseOver={() => handleOpenModal("")}>
+              <Link to="/best" onMouseOver={menuModal.closeModal}>
                 BEST
               </Link>
-              <span onMouseOver={() => handleOpenModal("Women")}>WOMEN</span>
-              <span onMouseOver={() => handleOpenModal("Man")}>MAN</span>
-              <span onMouseOver={() => handleOpenModal("Interior")}>
+              <span onMouseOver={() => handleOpenModal("women")}>WOMEN</span>
+              <span onMouseOver={() => handleOpenModal("man")}>MAN</span>
+              <span onMouseOver={() => handleOpenModal("interior")}>
                 INTERIOR
               </span>
 
-              <Link to="/mybag" onMouseOver={() => handleOpenModal("")}>
+              <Link to="/user/mybag" onMouseOver={menuModal.closeModal}>
                 Event
               </Link>
-              <Link to="/best" onMouseOver={() => handleOpenModal("")}>
+              <Link to="/best" onMouseOver={menuModal.closeModal}>
                 LookBook
               </Link>
             </div>
-            {modalShow && (
-              <MenuModal setModalShow={setModalShow} type={modalCategory} />
+            {menuModal.modalState.isOpen && (
+              <MenuModalCard
+                onClose={menuModal.closeModal}
+                type={modalCategory}
+              />
             )}
           </div>
         </div>
@@ -186,6 +168,20 @@ const HeaderSection = styled.section`
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
+
+  .search {
+    display: flex;
+
+    padding-top: 2px;
+    cursor: pointer;
+    img {
+      width: 1.5rem;
+    }
+    .underLine {
+      width: 7rem;
+      border-bottom: 1px solid #551a8b;
+    }
   }
   .clothes-home-tech-clothes-home-tech {
     display: flex;

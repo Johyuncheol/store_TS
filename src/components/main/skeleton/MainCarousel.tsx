@@ -21,13 +21,15 @@ const MainCarousel: React.FC = () => {
 export default MainCarousel;
 
 const CarouselSection = styled.section`
-  margin-top: 10rem;
-  width: 64rem;
-  height: 22.156rem;
+  display: flex;
+  width: 100%;
+  height: 26.156rem;
+  background-color: none;
+  overflow: hidden;
   position: relative;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 `;
-
 const RightBtn = styled.img`
   position: absolute;
   right: 0;
@@ -49,17 +51,17 @@ const LeftBtn = styled.img`
 `;
 
 const Inner = styled.div`
-  overflow: hidden;
-  background: linear-gradient(to right, #eeeeee 10%, #dddddd 28%, #eeeeee 53%);
-  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  width: 64rem;
-  height: 22.156rem;
+  height: 26.156rem;
+  display: flex;
 
   .card {
-    width: 64rem;
+    width: 99vw;
     opacity: 0.5;
-    height: 22.156rem;
+    height: 26.156rem;
     background: linear-gradient(
       to right,
       #eeeeee 10%,

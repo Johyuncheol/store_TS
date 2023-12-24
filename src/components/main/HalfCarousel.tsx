@@ -108,6 +108,7 @@ const HalfCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
       }, 0);
     }
   };
+  console.log('HalfCarousel component is being executed!');
 
   return (
     <>

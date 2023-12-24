@@ -5,48 +5,51 @@ import menuData from "../staticData/json/menuCategory.json";
 import { Link } from "react-router-dom";
 import { getCategoryData } from "../api/Category";
 import { useNavigate } from "react-router-dom";
+import { usePagination } from "../hooks/usePageNation";
+
+
 const Category: React.FC = () => {
   const location = useLocation();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const info = location.pathname.split("/");
   const categoryName = info[2];
   const detail = info[3];
-  const [selectedMenu,setSelectedMenu] = useState(detail);
+  const [selectedMenu, setSelectedMenu] = useState(detail);
 
   interface Category {
     mainCategory: string;
     subCategory: string[];
   }
 
-  interface itemsRequire {
-    brand: string;
-    id: number;
-    imgSrc: string;
-    name: string;
-    price: string;
-  }
-
   const [categoryInfo, setCategoryInfo] = useState<Category>();
-  const [itemsData, setItemsData] = useState<itemsRequire[]>([]);
+
+  const {
+    showData,
+    pageNums,
+    currentPage,
+    setCurrentPage,
+    movePageBtnHandler,
+    setKey
+  } = usePagination(() =>
+    getCategoryData(`${categoryName}/${selectedMenu.toLowerCase()}`,currentPage),20
+  );
 
   const fetchData = async () => {
-    const res = await getCategoryData(categoryName, selectedMenu.toLowerCase());
-    setItemsData(res);
+    console.log("==", showData);
   };
 
-  const goDetailPage=(id:number)=>{
+  const goDetailPage = (id: number) => {
     navigate(`/detail/${id}`);
-    
-  }
-
+  };
 
   useEffect(() => {
+    setKey([categoryName,detail,currentPage])
     if (categoryName === "women") setCategoryInfo(menuData.Women);
     if (categoryName === "man") setCategoryInfo(menuData.Man);
     if (categoryName === "interior") setCategoryInfo(menuData.Interior);
     fetchData();
-  }, [categoryName, menuData,detail]);
+  }, [categoryName, menuData, detail]);
 
   return (
     <PageSection>
@@ -60,7 +63,7 @@ const Category: React.FC = () => {
                   to={`/category/${categoryName + "/" + item.toLowerCase()}`}
                   className="detailCategory"
                   key={index}
-                  onClick={()=>setSelectedMenu(item)}
+                  onClick={() => setSelectedMenu(item)}
                   selected={selectedMenu === item.toLowerCase()}
                 >
                   {item}
@@ -70,20 +73,56 @@ const Category: React.FC = () => {
           </div>
         </div>
       </div>
-      <ContentArticle>
-        {itemsData.map((item, index) => {
-          return (
-            <div className="itemBox" key={index} onClick={()=>goDetailPage(item.id)}>
-              <img src={item.imgSrc} />
-              <div className="itemInfo">
-                <span className="bold">{item.brand}</span>
-                <span>{item.name}</span>
-                <span className="bold">{item.price}</span>
-              </div>
-            </div>
-          );
-        })}
-      </ContentArticle>
+      <article className="pageNation">
+        <ContentArticle>
+          {showData?.map((item, index) => {
+            if (
+              "imgSrc" in item &&
+              "brand" in item &&
+              "price" in item &&
+              "name" in item &&
+              "id" in item
+            )
+              return (
+                <div
+                  className="itemBox"
+                  key={index}
+                  onClick={() => goDetailPage(item.id)}
+                >
+                  <img src={item.imgSrc} />
+                  <div className="itemInfo">
+                    <span className="bold">{item.brand}</span>
+                    <span>{item.name}</span>
+                    <span className="bold">{item.price}</span>
+                  </div>
+                </div>
+              );
+          })}
+        </ContentArticle>
+        <PageNums >
+          <span onClick={() => movePageBtnHandler("left")}>{"<"}</span>
+          {pageNums.map((item, index) => {
+            return currentPage === item ? (
+              <span
+                className="bold"
+                key={index}
+                onClick={() => setCurrentPage(item)}
+              >
+                {item}
+              </span>
+            ) : (
+              <span
+                className="grey"
+                key={index}
+                onClick={() => setCurrentPage(item)}
+              >
+                {item}
+              </span>
+            );
+          })}
+          <span onClick={() => movePageBtnHandler("right")}>{">"}</span>
+        </PageNums>
+      </article>
     </PageSection>
   );
 };
@@ -118,6 +157,29 @@ const PageSection = styled.section`
 
   .contents {
     display: grid;
+  }
+
+  .pageNation {
+    display: flex;
+    flex-direction: column;
+    gap:5rem;
+    align-items:center;
+  }
+`;
+
+const PageNums = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+
+  span {
+    cursor: pointer;
+  }
+  .bold {
+    font-weight: 600;
+  }
+  .grey {
+    color: grey;
   }
 `;
 

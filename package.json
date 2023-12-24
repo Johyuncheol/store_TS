@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
+    "@tanstack/react-query": "^5.13.4",
+    "@tanstack/react-query-devtools": "^5.13.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -13,6 +15,8 @@
     "@types/react-dom": "^18.2.17",
     "@types/react-redux": "^7.1.31",
     "axios": "^1.6.2",
+    "fs": "^0.0.1-security",
+    "immutable": "^5.0.0-beta.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-loading-skeleton": "^3.3.1",

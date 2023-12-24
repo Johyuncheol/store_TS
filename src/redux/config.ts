@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import User from './modules/User';
+import Cache from './modules/Cache';
 
 const rootReducer = combineReducers({
-    User
+    User ,Cache
 });
 
 // 루트 리듀서를 내보내주세요.
