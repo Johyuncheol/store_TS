@@ -1,7 +1,10 @@
 # Everyday Chic
 #### 클라이언트 : React.js
 #### 언어 : TypeScripts
-#### mock API : MSW 
+#### mock API : MSW  
+    => MSW로 일부 ui작성  
+    현재 서버 개발도 동시에 진행 중 이라 store_Backend 레포지토리의 node Express로 localhost:4000 주소로 동작 중 
+                
 
 개발브랜치는 jo 입니다. 
 
