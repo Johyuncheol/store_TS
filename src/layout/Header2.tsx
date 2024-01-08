@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-import { usePageCache } from "../hooks/usePageCache";
 import MenuModalCard from "../components/header/MenuModalCard2";
 import SearchModalCard from "../components/header/SearchModalCard";
 
@@ -15,8 +14,9 @@ const Header2: React.FC = () => {
   const [modalCategory, setModalCategory] = useState("");
 
   const searchModal = useModal({ isOpen: false });
-  const user = useSelector((state: RootState) => state.User);
 
+  const user = useSelector((state: RootState) => state.User);
+  console.log(user)
   //상세카테고리 모달창 open
   const handleOpenModal = (type: string) => {
     setModalCategory(type);
@@ -32,6 +32,7 @@ const Header2: React.FC = () => {
         <h1>
           <Link to="/">EveryDay</Link>
         </h1>
+
         <nav className="nav">
           <div className="option">
             <a onClick={searchModal.openModal}>
@@ -47,7 +48,9 @@ const Header2: React.FC = () => {
                 <img src="https://cdn.pixabay.com/photo/2016/08/31/11/54/icon-1633249_1280.png" />
               </Link>
             ) : (
-              <Link to="/login">L</Link>
+              <Link to="/login">
+                L
+              </Link>
             )}
           </div>
           <div className="nav" onMouseLeave={menuModal.closeModal}>
@@ -78,7 +81,7 @@ const Header2: React.FC = () => {
                 <MenuModalCard
                   onClose={menuModal.closeModal}
                   type={modalCategory}
-                  position={false}
+                  position={true}
                 />
               )}
             </div>
@@ -100,40 +103,69 @@ const Header = styled.header`
   padding: 10px 30px 10px 30px;
 
   z-index: 10;
-  position: fixed;
 
-  align-items: center;
   h1 {
     font-size: 3.5rem;
     text-align: center;
   }
+  position: fixed;
 
   a {
     text-decoration: none;
     color: black;
   }
 
-  .nav {
-    a {
-      padding: 6px;
-      text-decoration: none;
-      color: gray;
-      &:hover {
-        color: black;
-        text-decoration: underline;
-      }
-    }
+  @media (min-width: 769px) {
+    top: 0;
+    height: 100%;
+    flex-direction: column-reverse;
 
-    .option {
+    width: 300px;
+
+    .nav {
       display: flex;
-      justify-content: right;
+      flex-direction: column;
+      align-items: end;
+      a {
+        transition: all 200ms ease-in-out;
+        padding: 6px;
+
+        color: gray;
+        &:hover {
+          color: black;
+          text-decoration: underline;
+        }
+      }
+
       img {
         width: 20px;
       }
     }
   }
-  h1 {
-    font-size: 2rem;
-    text-align: center;
+  @media (max-width: 768px) {
+    align-items: center;
+    .nav {
+      a {
+        padding: 6px;
+
+        color: gray;
+        &:hover {
+          color: black;
+          text-decoration: underline;
+        }
+      }
+
+      .option {
+        display: flex;
+        justify-content: right;
+        img {
+          width: 20px;
+        }
+      }
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+    }
   }
 `;

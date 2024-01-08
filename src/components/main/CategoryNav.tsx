@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const CategoryNav = () => {
+  const navigate=useNavigate();
   const category = [
     {
       name: "BEST",
@@ -9,27 +11,32 @@ const CategoryNav = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
     },
     {
-      name: "WOMAN",
+      name: "WOMEN",
+      path:'/category/women/all',
       imgSrc:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
     },
     {
       name: "MAN",
+      path:'/category/man/all',
       imgSrc:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
     },
     {
       name: "INTERIOR",
+      path:'/category/interior/all',
       imgSrc:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
     },
     {
-        name: "CURTURE",
+        name: "EVENT",
+        path:'/event',
         imgSrc:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
       },
     {
         name: "LOOKBOOK",
+        path:"/lookbook",
         imgSrc:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTC_Varq6a2k-TR670RYQkEfHPGgRYXArbGuw&usqp=CAU",
       },
@@ -38,7 +45,7 @@ const CategoryNav = () => {
     <CategorySection>
       {category.map((item, index) => {
         return (
-          <Box key={index}>
+          <Box key={index} onClick={()=>navigate(`${item.path}`)}>
             <img src={item.imgSrc} />
             <div>{item.name}</div>
           </Box>

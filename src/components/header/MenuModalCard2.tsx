@@ -6,9 +6,10 @@ import menuData from "../../staticData/json/menuCategory.json";
 interface MenuModalProps {
   onClose: () => void;
   type: string;
+  position: boolean;
 }
 
-const MenuModal: React.FC<MenuModalProps> = ({ onClose, type }) => {
+const MenuModal: React.FC<MenuModalProps> = ({ onClose, type, position }) => {
   interface Category {
     mainCategory: string;
     subCategory: string[];
@@ -24,7 +25,7 @@ const MenuModal: React.FC<MenuModalProps> = ({ onClose, type }) => {
   }, [type, menuData]);
 
   return (
-    <ModalSection onMouseLeave={onClose}>
+    <ModalSection onMouseLeave={onClose} position={position}>
       <div className="category">
         <Link to={""} className="mainCategory">
           {categoryInfo?.mainCategory}
@@ -49,17 +50,20 @@ const MenuModal: React.FC<MenuModalProps> = ({ onClose, type }) => {
 
 export default MenuModal;
 
-const ModalSection = styled.section`
+const ModalSection = styled.section<{ position: boolean }>`
   display: flex;
-  position: fixed;
-  left: 0;
-  width: 100vw;
-  height: 300px;
-  background-color: #eeeeeef9;
-  padding: 0 2rem;
+  position: absolute;
 
+  @media (min-width: 769px) {
+    top: ${(props) => (props.position === true ? 0 : "")};
+  }
+
+  width: 100%;
+  height: 300px;
+  background-color: #f0f2a0f8;
+  padding: 0 2rem;
+  border-bottom: 3px solid black;
   gap: 10rem;
-  border-bottom: 1px solid black;
 
   z-index: 10;
 
@@ -74,6 +78,7 @@ const ModalSection = styled.section`
       font-weight: bold;
     }
     .detailCategory {
+      transition: all 200ms ease-in-out;
       font-size: 0.9rem;
       line-height: 2rem;
       text-decoration: none;

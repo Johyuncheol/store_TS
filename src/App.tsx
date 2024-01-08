@@ -12,7 +12,7 @@ import Category from "./pages/Category";
 import Detail from "./pages/Detail";
 import Register from "./pages/Register";
 import { putInShoppingBagAPI } from "./api/ShoppingBag";
-
+import Layout2 from "./layout/Layout2";
 function App() {
   useEffect(() => {
     const runFncAtClosedSession = () => {
@@ -33,24 +33,27 @@ function App() {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-      <Globalstyles />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Main />} />
-          <Route path="category/:param1/:param2" element={<Category />} />
-          <Route path="detail/:id" element={<Detail />} />
-
-          {/* private Router */}
-          <Route path="/user" element={<PrivateRouter />}>
-            <Route path="/user/mybag" element={<MyBag />} />
+        <Globalstyles />
+        <Routes>
+          <Route path="/" element={<Layout2 />}>
+            <Route path="/" element={<Main />} />
           </Route>
-        </Route>
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Layout />}>
+            <Route path="category/:param1/:param2" element={<Category />} />
+            <Route path="detail/:id" element={<Detail />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+            {/* private Router */}
+            <Route path="/user" element={<PrivateRouter />}>
+              <Route path="/user/mybag" element={<MyBag />} />
+            </Route>
+          </Route>
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Suspense>
     </>
   );

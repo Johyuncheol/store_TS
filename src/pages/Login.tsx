@@ -40,6 +40,7 @@ const Login = () => {
 
     // 요청결과로 받은 유저의 정보를 저장
     dispatch(LOGIN_USER(res.name));
+    console.log(res.name)
     navigate(-1);
   };
 

@@ -4,7 +4,7 @@ import axios from "axios";
 export const getCategoryData = async (path:string,page:number) => {
     try {
       const res = await axios.get(`${BASE_URL}/category/${path}?page=${page}`);
-        console.log("ㅁㅁㄷㅇㅁㄴㅇ")
+        console.log(res)
 
       return res
     } catch (error) {

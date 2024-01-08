@@ -19,9 +19,10 @@ export const usePageCache = (api: () => Promise<AxiosResponse<any, any>>) => {
   const fetchData = async () => {
 
     const cacheKey = `${pageKey.join("-")}`; //키값 설정  
-
+    console.log(cacheRedux)
     // 이미 요청 보낸 페이지라면 메모리에서 추출 
     if (cacheRedux.has(cacheKey)) {
+ 
       setCacheData(cacheRedux.get(cacheKey));
 
       return;
@@ -31,9 +32,10 @@ export const usePageCache = (api: () => Promise<AxiosResponse<any, any>>) => {
       const res = await api(); // 서버로 요청 
         
       setCacheData(res.data.data);
-
+      console.log(1)
       // 캐시데이터에 저장
       dispatch(PAGE_CACHE({ key: cacheKey, data: res.data.data }));
+      console.log(cacheRedux)
     } catch (error) {
       console.error("Error fetching data:", error);
     }

@@ -25,5 +25,12 @@
             "조명",
             "페브릭"
         ]
+    },
+    "LookBook": {
+        "mainCategory": "LookBook",
+        "subCategory": [
+            "쇼룸",
+            "크루 취향"
+        ]
     }
 }

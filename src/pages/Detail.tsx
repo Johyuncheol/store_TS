@@ -11,11 +11,11 @@ const Detail: React.FC = () => {
   const customOptions = [
     {
       label: "color",
-      values: ["차콜" ,"블루","그레이"],
+      values: ["차콜", "블루", "그레이"],
     },
     {
       label: "size",
-      values: ["S" ,"M","L"],
+      values: ["S", "M", "L"],
     },
   ];
   const location = useLocation();
@@ -112,7 +112,8 @@ const Detail: React.FC = () => {
               <div className="otherInfo">
                 <p>배송정보</p>
                 <p>
-                  {data.noDeliveryPrice}원 미만 결제 시 {data.deliveryFee}원 발생
+                  {data.noDeliveryPrice}원 미만 결제 시 {data.deliveryFee}원
+                  발생
                 </p>
               </div>
             </div>
@@ -138,19 +139,21 @@ const Detail: React.FC = () => {
 export default Detail;
 
 const DetailSection = styled.section`
-  padding: 0 1rem;
-  width: 100%;
-  min-width: 850px;
-  display: flex;
-  flex-direction: column;
-
   .mainInfo {
     display: flex;
-    justify-content: center;
+
+    @media (max-width: 550px) {
+      flex-direction: column-reverse;
+      align-items: center;
+    }
 
     .left {
       padding: 3rem;
       width: 63%;
+
+      @media (max-width: 550px) {
+        width: 100%;
+      }
 
       max-width: 1200px;
       display: flex;
@@ -180,8 +183,12 @@ const DetailSection = styled.section`
     .right {
       padding: 3rem;
 
-      width: 30%;
+      /*      width: 30%; */
       min-width: 350px;
+
+      @media (max-width: 550px) {
+        width:100%;
+      }
 
       display: flex;
       flex-direction: column;
@@ -216,7 +223,7 @@ const DetailSection = styled.section`
 
       .option2 {
         position: sticky;
-        top: 5rem;
+        top: 8rem;
         display: flex;
 
         flex-direction: column;
@@ -231,9 +238,9 @@ const DetailSection = styled.section`
         font-size: 1rem;
       }
 
-      .otherInfo{
-        font-size:0.7rem;
-        border-bottom:1px solid #c2c3c4;
+      .otherInfo {
+        font-size: 0.7rem;
+        border-bottom: 1px solid #c2c3c4;
       }
     }
 

@@ -12,7 +12,7 @@ const PrivateRouter: React.FC = () => {
     const res = await CheckIsLoginAPI();
 
     setAuth(res?.status);
-    if (res?.status !== 201) {
+    if (res?.status !== 201 && res?.status !== 205) {
       navigate("/login");
     } 
   };
@@ -22,7 +22,7 @@ const PrivateRouter: React.FC = () => {
     authenticated();
   }, []);
 
-  return auth === 201 ? <Outlet /> : <div style={{height:"100vw"}}></div>;
+  return auth === 201 || 205 ? <Outlet /> : <div style={{height:"100vw"}}></div>;
 };
 
 export default PrivateRouter;

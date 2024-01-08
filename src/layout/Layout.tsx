@@ -7,7 +7,10 @@ const Layout: React.FC = () => {
   return (
     <LayoutSection>
       <Header />
-      <Outlet />
+      <CoverSection>
+        <Outlet />
+      </CoverSection>
+
       <Footer />
     </LayoutSection>
   );
@@ -19,5 +22,7 @@ const LayoutSection = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
-
+`;
+const CoverSection = styled.section`
+  margin-top: 100px;
 `;
