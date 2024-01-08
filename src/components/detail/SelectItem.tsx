@@ -51,7 +51,7 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<ItemRequire2>({});
   const [selectedItems, setSelectedItems] = useState<ItemRequire[]>([]);
   const [totalNums, setTotalNums] = useState(0);
-  const [modalState, setModalState] = useState<string>('');
+  const [modalState, setModalState] = useState<string>("");
   const userInfo = useSelector((state: RootState) => state.User);
 
   const AlertModal = useModal({ isOpen: false });
@@ -213,10 +213,8 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
     if (userInfo.name === null) return navigate("/login");
     const shoppingBagData = sessionStorage.getItem("shoppingBag");
 
-    if(shoppingBagData)
-    putInShoppingBagAPI(JSON.parse(shoppingBagData))
-    if(selectedItems.length===0) return
-
+    if (shoppingBagData) putInShoppingBagAPI(JSON.parse(shoppingBagData));
+    if (selectedItems.length === 0) return;
 
     if (shoppingBagData !== null) {
       const newArray = mergeArrays({
@@ -228,16 +226,17 @@ const ItemSelection: React.FC<ItemSelectionProps> = ({
       sessionStorage.setItem("shoppingBag", JSON.stringify(selectedItems));
     }
 
-    setModalState('장바구니에 담기 완료')
+    setModalState("장바구니에 담기 완료");
     setSelectedItems([]);
-    AlertModal.openModal()
+    AlertModal.openModal();
   };
-
 
   return (
     <SelectSection>
-      {AlertModal.modalState.isOpen && <AlertModalCard onClose={AlertModal.closeModal} detail={modalState}/>}
-      
+      {AlertModal.modalState.isOpen && (
+        <AlertModalCard onClose={AlertModal.closeModal} detail={modalState} />
+      )}
+
       {options.map((option) => (
         <div key={option.label}>
           <select
@@ -333,10 +332,15 @@ const SelectSection = styled.section`
     flex-direction: column;
     justify-content: center;
   }
+
+  .btnWrap {
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const Button = styled.button<{ state: boolean }>`
-  width: 10rem;
+  width: 50%;
   border: 1px solid black;
   text-align: center;
   line-height: 3rem;

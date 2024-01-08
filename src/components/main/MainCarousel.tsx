@@ -7,6 +7,7 @@ import RightArrow from "../../assets/main/RightArrow.svg";
 interface Item {
   id: number;
   imgSrc: string;
+  detail: string;
 }
 
 const MainCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
@@ -114,13 +115,14 @@ const MainCarousel: React.FC<{ adata: Item[] }> = ({ adata }) => {
 
   return (
     <>
-      <BackgroundIMG bgIMG={backgroundImg} />
+      {/*       <BackgroundIMG bgIMG={backgroundImg} /> */}
       <CarouselSection>
         <Inner ref={carouselRef}>
           {data.map((item, index) => {
             return (
               <div className="card" key={index}>
                 <img src={item.imgSrc} alt={`id: ${item.id}인 포스트`} />
+                <span className="detail">{item.detail}</span>
               </div>
             );
           })}
@@ -152,7 +154,7 @@ const CarouselSection = styled.section`
   overflow: hidden;
   position: relative;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  /*   border-radius: 10px; */
 `;
 
 const Inner = styled.div`
@@ -166,11 +168,27 @@ const Inner = styled.div`
   .card {
     display: flex;
 
-    width: 99vw;
+    width: calc(100vw - 300px);
     height: 26.156rem;
     background-color: #d9d9d9;
+    position: relative;
+
     img {
-      width:100%;
+      width: 100%;
+      height: 100%;
+    }
+
+    .detail {
+      position: absolute;
+      bottom: 10%;
+      left: 5%;
+      color: white;
+
+      font-size: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      width: 100vw;
     }
   }
 `;

@@ -18,13 +18,13 @@ const UserInfoSlice = createSlice({
     initialState,
     reducers:{
         LOGIN_USER:(state,action)=>{
-            state.name=action.payload.name;
-            sessionStorage.setItem("userInfo", JSON.stringify(state));
+            state.name=action.payload;
 
+            sessionStorage.setItem("userInfo", JSON.stringify(state));
         },
 
         LOGOUT_USER:(state,action)=>{
-            state.name=action.payload.name;
+            state.name=action.payload;
             sessionStorage.removeItem("userInfo");
             //clear로 한번에 지울수있지만
             //추후 지워지면 안되는 정보를 담을수도있어서 우선은 유지

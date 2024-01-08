@@ -1,6 +1,7 @@
 export interface Item {
   id: number;
   imgSrc: string;
+  detail:string;
 }
 
 export interface MainData {

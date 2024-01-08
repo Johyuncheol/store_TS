@@ -29,8 +29,8 @@ const SmallCarousel: React.FC<{
     if (carouselRef.current) {
       localVarRef.current = localVarRef.current + 1; // Update localVarRef.current
 
-      if (localVarRef.current > data.length - 4) {
-        localVarRef.current = data.length - 4;
+      if (localVarRef.current > data.length - 3) {
+        localVarRef.current = data.length - 3;
         return 0;
       } else {
         carouselRef.current.style.transition = "transform 0.5s ease";
@@ -53,7 +53,7 @@ const SmallCarousel: React.FC<{
 
   const prevSlide = () => {
     if (carouselRef.current) {
-      localVarRef.current = localVarRef.current - 1; // Update localVarRef.current
+      localVarRef.current = localVarRef.current - 1; 
 
       if (currentIndex === 0) {
         localVarRef.current = 0;
@@ -132,13 +132,13 @@ export default SmallCarousel;
 
 const CarouselSection = styled.section<{height: string}>`
   display: flex;
-  width: 90vw;
+  width: 100%;
   height: ${(props)=>props.height};
 
   overflow: hidden;
   position: relative;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+/*   border-radius: 10px; */
 `;
 
 const Inner = styled.div<{ width: string; height: string }>`
@@ -154,11 +154,11 @@ const Inner = styled.div<{ width: string; height: string }>`
     justify-content: center;
     width: ${(props)=>props.width};
     height: ${(props)=>props.height};
-    flex-shrink: 0; // Prevent cards from shrinking
+    flex-shrink: 0; 
 
     img {
       width: 100%;
-      border-radius: 10px;
+   /*    border-radius: 10px; */
     }
   }
 `;

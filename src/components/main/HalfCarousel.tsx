@@ -179,9 +179,8 @@ const CarouselSection = styled.section`
   background-color: none;
   overflow: hidden;
   position: relative;
-  border-top: 1px solid grey;
   box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+
 `;
 
 const Inner = styled.div`
@@ -227,11 +226,13 @@ const Card = styled.div`
   display: flex;
   align-items: Center;
   justify-content: space-around;
-  width: 100vw;
+  width: calc(100vw - 300px);
   gap:5px;
   background-color:#c1c1c1;
 
-
+  @media (max-width: 768px) {
+      width:100vw;
+    }
   .contentbox {
     width: 50%;
     height: 33%;

@@ -123,7 +123,7 @@ const Inner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
+  
   height: 26.156rem;
   display: flex;
 

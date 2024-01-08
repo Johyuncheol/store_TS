@@ -140,6 +140,7 @@ const MyBag = () => {
     );
   };
 
+  console.log(data);
   return (
     <CenterWrap>
       <MyBagSection>
@@ -152,7 +153,7 @@ const MyBag = () => {
         </div>
 
         <div className="itemSection">
-          {data !== null ? (
+          {data !== null && data.length !== 0 ? (
             <div className="layout1">
               <div className="layout">
                 <div className="menuItem">
@@ -405,7 +406,7 @@ const MyBagSection = styled.section`
     }
 
     .nonItems {
-      font-size: 3rem;
+      font-size: 2.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;

@@ -8,12 +8,14 @@ interface LoginRequest {
 
 export const LoginAPI = async (user: LoginRequest) => {
   try {
+    console.log(user)
     const res = await axios.post(`${BASE_URL}/auth/login`, user, {
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true
     });
+    console.log(res)
     return res.data.data;
   } catch (error) {
     alert(error);

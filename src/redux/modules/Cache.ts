@@ -8,7 +8,8 @@ const CacheSlice = createSlice({
   name: "Cache",
   initialState,
   reducers: {
-      PAGE_CACHE: (state, action) => {
+      PAGE_CACHE: (state, action) => {  
+        console.log(state)
         return state.set(action.payload.key, action.payload.data)
     },
   },
