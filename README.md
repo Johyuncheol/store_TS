@@ -15,3 +15,5 @@
 
 개발 대시보드: 
 https://www.notion.so/Everyday-chic-07d941aad3d8479e9edb77fe8fb0f501?pvs=4
+
+ui 미리보기: https://johc.tistory.com/149
